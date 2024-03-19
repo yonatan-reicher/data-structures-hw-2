@@ -5,30 +5,41 @@
 #include <cmath>
 
 unsigned int hash(unsigned int x) {
-    constexpr unsigned int MULTIPLIER = 0x45d9f3b;
-    x = ((x >> 16) ^ x) * MULTIPLIER;
-    x = ((x >> 16) ^ x) * MULTIPLIER;
-    x = (x >> 16) ^ x;
+    // According to the all knowing Piazza, this constitutes a good hash function.
+    // I'll keep this here just to explicitly cast to unsigned int.
     return x;
 }
 
+
+/*
+ *  O(1) armortized time! Yay
+ *
+ *  Notes:
+ *  1. Elements *don't* stay in same place in memory!
+ *     This means that you SHOULD NOT keep references returned by get.
+ *  2. This is generic on keys but we can only hash thingts that convert to
+ *     unsigned int. 
+ *  3. Does not support duplicate keys!
+ */
 template <typename K, typename V>
 class HashTable {
-    // Load factor = size / capacity
+    // Load factor = size / amount of cells
     constexpr static double MIN_LOAD_FACTOR = 0.25;
     constexpr static double MAX_LOAD_FACTOR = 0.75;
     constexpr static double WANTED_LOAD_FACTOR = 0.5;
-    constexpr static unsigned int START_CAPACITY = 8;
+    constexpr static unsigned int START_CELLS = 8;
 
     std::unique_ptr<Tree<K, V>[]> m_array;
+    // Amount of elements in the hash table
     int m_size;
-    int m_capacity;
+    // Amount of cells (trees) in the hash table
+    int m_cellsCount;
     
 public:
     HashTable()
-        : m_array(new Tree<K, V>[START_CAPACITY]),
+        : m_array(new Tree<K, V>[START_CELLS]),
         m_size(0),
-        m_capacity(START_CAPACITY) {}
+        m_cellsCount(START_CELLS) {}
 
     /* This function "fixes" the hash table.
      * 1. It reallocates the array according to the load factor.
@@ -37,22 +48,76 @@ public:
      * Complexity: O(n)
      */
     void rehash() {
-        int newCapacity = std::ceil(m_size / WANTED_LOAD_FACTOR);
+        int newCellCount = std::ceil(m_size / WANTED_LOAD_FACTOR);
 
-        std::unique_ptr<Tree<K, V>[]> newArray(new Tree<K, V>[newCapacity]);
-        for (int i = 0; i < m_capacity; i++) {
+        std::unique_ptr<Tree<K, V>[]> newArray(new Tree<K, V>[newCellCount]);
+        for (int i = 0; i < m_cellsCount; i++) {
             Tree<K, V>& tree = m_array[i];
-            tree.toArray();
+
+            // Iterate through the tree element by element.
+            std::unique_ptr<K*[]> keys = std::unique_ptr<K*[]>(tree.keysToArray());
+            std::unique_ptr<V*[]> values = std::unique_ptr<V*[]>(tree.toArray());
+            for (int j = 0; j < tree.size(); j++) {
+                unsigned int index = hash(*keys[j]) % newCellCount;
+                newArray[index].insert(std::move(*keys[j]), std::move(*values[j]));
+            }
+        }
+
+        // Now switch the arrays!
+        m_array = std::move(newArray);
+        m_cellsCount = newCellCount;
+    }
+
+    void afterChange() {
+        if ((double)m_size / m_cellsCount < MIN_LOAD_FACTOR) {
+            rehash();
+        }
+        if ((double)m_size / m_cellsCount > MAX_LOAD_FACTOR) {
+            rehash();
         }
     }
 
-    bool contains(int key) const;
-    V& insert(int key, V value) {
-        throw std::runtime_error("Not implemented");
+    bool contains(const K& key) const {
+        unsigned int index = hash(key) % m_cellsCount;
+        return m_array[index].contains(key);
     }
-    const V& find(int key) const;
-    V& find(int key);
-    V remove(int key);
+
+    void insert(K key, V value) {
+        unsigned int index = hash(key) % m_cellsCount;
+        m_array[index].insert(key, std::move(value));
+        m_size++;
+
+        afterChange();
+
+        // In contrast to tree, we don't return a reference to the value because
+        // afterChange might change it's location in memory so I thought it's
+        // better to just not call get for no reason to find it.
+    }
+
+    // Do not keep the reference returned by get! See the class comment.
+    const V& get(K key) const {
+        unsigned int index = hash(key) % m_cellsCount;
+        return m_array[index].get(key);
+    }
+    // Do not keep the reference returned by get! See the class comment.
+    V& get(K key) {
+        unsigned int index = hash(key) % m_cellsCount;
+        return m_array[index].get(key);
+    }
+
+    V remove(K key) {
+        unsigned int index = hash(key) % m_cellsCount;
+        V value = m_array[index].remove(key);
+        m_size--;
+
+        afterChange();
+
+        return value;
+    }
+
+    int size() const {
+        return m_size;
+    }
 };
 
 #endif

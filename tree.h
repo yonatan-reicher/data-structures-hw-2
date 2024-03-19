@@ -334,16 +334,31 @@ const std::unique_ptr<Node<K, T>>& getMinimum(const std::unique_ptr<Node<K, T>>&
 
 // Returns the number of elements written
 template <class K, class T>
-int treeToArray(const std::unique_ptr<Node<K, T>>& root, T* array) {
+int treeToArray(const std::unique_ptr<Node<K, T>>& root, T** array) {
     if (root == nullptr) {
         return 0;
     }
 
     int written = 0;
     written += treeToArray(root->getLeft(), array);
-    array[written] = root->data;
+    array[written] = &root->data;
     written++;
     written += treeToArray(root->getRight(), array + written);
+    return written;
+}
+
+// Returns the number of elements written
+template <class K, class T>
+int treeKeysToArray(const std::unique_ptr<Node<K, T>>& root, K** array) {
+    if (root == nullptr) {
+        return 0;
+    }
+
+    int written = 0;
+    written += treeKeysToArray(root->getLeft(), array);
+    array[written] = &root->key;
+    written++;
+    written += treeKeysToArray(root->getRight(), array + written);
     return written;
 }
 
@@ -474,9 +489,17 @@ public:
     }
 
     // Return value must be deleted by the caller using delete[].
-    T* toArray() const {
-        T* array = new T[m_size];
+    // The pointers point to the data in the tree, they are not copies.
+    T** toArray() const {
+        T** array = new T*[m_size];
         int written = treeToArray(root, array);
+        assert(written == m_size);
+        return array;
+    }
+
+    K** keysToArray() const {
+        K** array = new K*[m_size];
+        int written = treeKeysToArray(root, array);
         assert(written == m_size);
         return array;
     }
