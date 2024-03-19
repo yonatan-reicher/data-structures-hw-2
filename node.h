@@ -25,10 +25,19 @@ int balanceFactor(const std::unique_ptr<Node<K, T>>& root) {
 }
 
 template <class K, class T>
+int count(const std::unique_ptr<Node<K, T>>& root) {
+    if (root == nullptr) {
+        return 0;
+    }
+    return root->m_count;
+}
+
+template <class K, class T>
 class Node {
     std::unique_ptr<Node> m_left;
     std::unique_ptr<Node> m_right;
     int m_height;
+    int m_count;
 public:
     K key;
     T data;
@@ -39,20 +48,20 @@ public:
         , key(std::move(key))
         , data(std::move(data))
     {
-        updateHeight();
+        updateHeightAndCount();
     }
 
     std::unique_ptr<Node> setLeft(std::unique_ptr<Node> newLeft) {
         std::unique_ptr<Node> ret = std::move(m_left);
         m_left = std::move(newLeft);
-        updateHeight();
+        updateHeightAndCount();
         return ret;
     }
 
     std::unique_ptr<Node> setRight(std::unique_ptr<Node> newRight) {
         std::unique_ptr<Node> ret = std::move(m_right);
         m_right = std::move(newRight);
-        updateHeight();
+        updateHeightAndCount();
         return ret;
     }
 
@@ -73,8 +82,9 @@ public:
     }
 
 private:
-    void updateHeight() {
+    void updateHeightAndCount() {
         m_height = 1 + std::max(height(m_left), height(m_right));
+        m_count = 1 + count(m_left) + count(m_right);
     }
 
     template <class L, class U>

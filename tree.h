@@ -394,6 +394,22 @@ std::unique_ptr<Node<K, T>> treeFromArray(T* array, int size, F& keyGenerator) {
 }
 
 template <class K, class T>
+const std::unique_ptr<Node<K, T>>& getByIndex(const std::unique_ptr<Node<K, T>>& root, int index) {
+    if (root == nullptr) {
+        throw std::exception("Index out of bounds");
+    }
+
+    int leftSize = count(root->getLeft());
+    if (index == leftSize) {
+        return root;
+    }
+    if (index < leftSize) {
+        return getByIndex(root->getLeft(), index);
+    }
+    return getByIndex(root->getRight(), index - leftSize - 1);
+}
+
+template <class K, class T>
 class Tree {
 private:
     using TreeNode = Node<K, T>;
@@ -402,21 +418,26 @@ private:
     int m_size;
     TreeNode* m_minimum;
     TreeNode* m_maximum;
+    TreeNode* m_middle;
 
-    void updateMinAndMax() {
+    void updateMinAndMaxAndMiddle() {
         std::unique_ptr<TreeNode>& min = const_cast<std::unique_ptr<TreeNode>&>(getMinimum(root));
         std::unique_ptr<TreeNode>& max = const_cast<std::unique_ptr<TreeNode>&>(getMaximum(root));
+        int middleIndex = m_size / 2;
+        std::unique_ptr<TreeNode>& middle = const_cast<std::unique_ptr<TreeNode>&>(getByIndex(root, middleIndex));
         m_minimum = min == nullptr ? nullptr : min.get();
         m_maximum = max == nullptr ? nullptr : max.get();
+        m_middle = middle.get();
         assert(m_size == 0 ? m_minimum == nullptr : m_minimum != nullptr);
         assert(m_size == 0 ? m_maximum == nullptr : m_maximum != nullptr);
+        assert(m_size == 0 ? m_middle == nullptr : m_middle != nullptr);
         assert(m_size == 0 || !(m_minimum->key > m_maximum->key));
     }
 public:
     Tree() {
         root = nullptr;
         m_size = 0;
-        updateMinAndMax();
+        updateMinAndMaxAndMiddle();
     }
     template <class F>
     Tree(const Tree&) = delete;
@@ -431,7 +452,7 @@ public:
             m_size++; // Must happen after the insert so we don't count failed calls.
         }
         // Update minimum and maximum. O(log n) time so it's fine.
-        updateMinAndMax();
+        updateMinAndMaxAndMiddle();
         return dataReference;
     }
 
@@ -439,7 +460,7 @@ public:
         T data = avlRemove(root, key);
         m_size--; // Must happen after the remove so we don't count failed calls.
         // Update minimum and maximum. O(log n) time so it's fine.
-        updateMinAndMax();
+        updateMinAndMaxAndMiddle();
         return data;
     }
 
@@ -512,7 +533,7 @@ public:
         Tree ret;
         ret.root = treeFromArray<K, T, F>(array, size, keyGenerator);
         ret.m_size = size;
-        ret.updateMinAndMax();
+        ret.updateMinAndMaxAndMiddle();
         return ret;
     }
 
