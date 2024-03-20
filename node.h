@@ -91,6 +91,8 @@ private:
     friend int height(const std::unique_ptr<Node<L, U>>&);
     template <class L, class U>
     friend int balanceFactor(const std::unique_ptr<Node<L, U>>&);
+    template <class L, class U>
+    friend int count(const std::unique_ptr<Node<L, U>>&);
 };
 
 #endif

@@ -396,7 +396,7 @@ std::unique_ptr<Node<K, T>> treeFromArray(T* array, int size, F& keyGenerator) {
 template <class K, class T>
 const std::unique_ptr<Node<K, T>>& getByIndex(const std::unique_ptr<Node<K, T>>& root, int index) {
     if (root == nullptr) {
-        throw std::exception("Index out of bounds");
+        throw std::runtime_error("Index out of bounds");
     }
 
     int leftSize = count(root->getLeft());
@@ -423,15 +423,18 @@ private:
     void updateMinAndMaxAndMiddle() {
         std::unique_ptr<TreeNode>& min = const_cast<std::unique_ptr<TreeNode>&>(getMinimum(root));
         std::unique_ptr<TreeNode>& max = const_cast<std::unique_ptr<TreeNode>&>(getMaximum(root));
-        int middleIndex = m_size / 2;
-        std::unique_ptr<TreeNode>& middle = const_cast<std::unique_ptr<TreeNode>&>(getByIndex(root, middleIndex));
         m_minimum = min == nullptr ? nullptr : min.get();
         m_maximum = max == nullptr ? nullptr : max.get();
-        m_middle = middle.get();
         assert(m_size == 0 ? m_minimum == nullptr : m_minimum != nullptr);
         assert(m_size == 0 ? m_maximum == nullptr : m_maximum != nullptr);
-        assert(m_size == 0 ? m_middle == nullptr : m_middle != nullptr);
         assert(m_size == 0 || !(m_minimum->key > m_maximum->key));
+
+        int middleIndex = m_size / 2;
+        m_middle = (
+            m_size == 0 ? nullptr :
+            const_cast<std::unique_ptr<TreeNode>&>(getByIndex(root, middleIndex)).get()
+        );
+        assert(m_size == 0 ? m_middle == nullptr : m_middle != nullptr);
     }
 public:
     Tree() {
