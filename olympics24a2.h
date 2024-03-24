@@ -1,4 +1,5 @@
 // 
+//
 // 234218 Data Structures 1.
 // Semester: 2024A (winter).
 // Wet Exercise #2.
@@ -16,12 +17,18 @@
 #define OLYMPICSA2_H_
 
 #include "wet2util.h"
+#include "tree.h"
+#include "hashtable.h"
+#include "PowerAndId.h"
+#include "Team.h"
 
 class olympics_t {
 private:
-	//
-	// Here you may add anything you want
-	//
+    Tree<PowerAndId, Team*> m_teamsByPower;
+    // Why unique_ptr? Because the hashtable moves the memory locations of it's
+    // elements so without unique_ptr we would not be able to take the address
+    // of the teams!
+    HashTable<int, std::unique_ptr<Team>> m_teams;
 	
 public:
 	// <DO-NOT-MODIFY> {
