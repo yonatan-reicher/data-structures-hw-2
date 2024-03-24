@@ -409,6 +409,48 @@ const std::unique_ptr<Node<K, T>>& getByIndex(const std::unique_ptr<Node<K, T>>&
     return getByIndex(root->getRight(), index - leftSize - 1);
 }
 
+// Gets and sets the branch sum (= sum of partial sums) of a given node.
+template <class K, class T>
+int branchSum(Node<K, T>* root, const K& key, int value) {
+    if (root == nullptr) return 0;
+
+    if (root->key == key) {
+        int previous = root->partialSum();
+        root->partialSum() = value;
+        return previous;
+    }
+
+    if (root->key < key) {
+        std::unique_ptr<Node<K, T>> right = root->popRight();
+        int result = branchSum(right.get(), key, value);
+        root->setRight(std::move(right));
+        return result;
+    } else {
+        std::unique_ptr<Node<K, T>> left = root->popLeft();
+        int result = branchSum(left.get(), key, value);
+        root->setLeft(std::move(left));
+        return result;
+    }
+}
+
+template <class K, class T>
+void addBranchSumUpTo(Node<K, T>* root, int i, int add) {
+    if (root == nullptr || i < 0) return;
+
+    int rootIndex = count(root->getLeft());
+    if (rootIndex <= i) {
+        root->partialSum() += add;
+        // Offset the right branch so we only increase to the left.
+        if (root->getRight()) {
+            root->getRight()->partialSum() -= add;
+        }
+
+        addBranchSumUpTo(root->getRight(), i - rootIndex - 1, add);
+    } else {
+        addBranchSumUpTo(root->getLeft(), i, add);
+    }
+}
+
 template <class K, class T>
 class Tree {
 private:
@@ -473,6 +515,31 @@ public:
 
     const T& get(const K& key) const {
         return btGet(root.get(), key);
+    }
+
+
+    // Branch sums start at 0. Branch sum is a property that can be added to on
+    // any number of nodes in log(n) time. Used for addWins in the original
+    // problem!
+    // Note: Must be called on a key that is in the tree.
+    int branchSum(const K& key) const {
+        int result = branchSum(root.get(), key, 0);
+        branchSum(root.get(), key, result);
+        return result;
+    }
+
+    void addBranchSumInRange(int lowIndex, int highIndex, int add) {
+        assert(lowIndex <= highIndex);
+        assert(highIndex < m_size);
+        assert(lowIndex >= 0);
+        if (lowIndex > 0) {
+            addBranchSumInRange(0, highIndex, add);
+            addBranchSumInRange(0, lowIndex - 1, -add);
+            return;
+        }
+
+        assert(lowIndex == 0);
+        addBranchSumUpTo(root.get(), highIndex, add);
     }
 
     bool contains(const K& key) const {
