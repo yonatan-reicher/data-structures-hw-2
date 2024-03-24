@@ -579,6 +579,10 @@ public:
         return m_maximum->key;
     }
 
+    const K& middleKey() const {
+        return m_middle->key;
+    }
+
     // Return value must be deleted by the caller using delete[].
     // The pointers point to the data in the tree, they are not copies.
     T** toArray() const {
