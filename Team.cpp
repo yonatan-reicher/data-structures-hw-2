@@ -45,7 +45,7 @@ int Team::size() const
     return m_players.size();
 }
 
-int Team::getStrength() const
+int Team::getPower() const
 {
     if (size() == 0) {
         // TODO: Is this correct? Maybe we should throw?

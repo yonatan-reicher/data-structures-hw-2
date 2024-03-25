@@ -20,7 +20,7 @@ public:
     
     bool removeNewestPlayer();
 
-    int getStrength() const;
+    int getPower() const;
 };
 
 #endif
