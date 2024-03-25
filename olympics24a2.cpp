@@ -2,25 +2,39 @@
 
 olympics_t::olympics_t()
 {
-	// TODO: Your code goes here
+	// nothing.
 }
 
 olympics_t::~olympics_t()
 {
-	// TODO: Your code goes here
+    // nothing too!
 }
 
 
 StatusType olympics_t::add_team(int teamId)
 {
-	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    if (teamId <= 0) return StatusType::INVALID_INPUT;
+    if (m_teams.contains(teamId)) return StatusType::FAILURE;
+
+    m_teams.insert(teamId, std::unique_ptr<Team>(new Team(teamId)));
+    return StatusType::SUCCESS;
 }
 
 StatusType olympics_t::remove_team(int teamId)
 {
-	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    if (teamId <= 0) return StatusType::INVALID_INPUT;
+    if (!m_teams.contains(teamId)) return StatusType::FAILURE;
+
+    // Tree
+    PowerAndId key = PowerAndId(m_teams.get(teamId)->getPower(), teamId);
+    if (m_teamsByPower.contains(key)) {
+        m_teamsByPower.remove(key);
+    }
+
+    // Table! The return value is ignored so it's destructor is called and the
+    // team is no more!
+    m_teams.remove(teamId);
+    return StatusType::SUCCESS;
 }
 
 StatusType olympics_t::add_player(int teamId, int playerStrength)
