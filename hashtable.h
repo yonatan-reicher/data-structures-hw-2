@@ -4,12 +4,6 @@
 #include "tree.h"
 #include <cmath>
 
-unsigned int hash(unsigned int x) {
-    // According to the all knowing Piazza, this constitutes a good hash function.
-    // I'll keep this here just to explicitly cast to unsigned int.
-    return x;
-}
-
 
 /*
  *  O(1) armortized time! Yay
@@ -69,6 +63,8 @@ public:
     }
 
     void afterChange() {
+        // TODO: Add min size condition so we don't resize down after
+        // the first insert.
         if ((double)m_size / m_cellsCount < MIN_LOAD_FACTOR) {
             rehash();
         }
@@ -117,6 +113,12 @@ public:
 
     int size() const {
         return m_size;
+    }
+private:
+    static unsigned int hash(unsigned int x) {
+        // According to the all knowing Piazza, this constitutes a good hash function.
+        // I'll keep this here just to explicitly cast to unsigned int.
+        return x;
     }
 };
 

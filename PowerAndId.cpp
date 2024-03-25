@@ -5,10 +5,6 @@ PowerAndId::PowerAndId(int strength, int id) {
     this->m_id = id;
 }
 
-PowerAndId::PowerAndId(const Team& team)
-: PowerAndId(team.m_strength, team.m_id)
-{}
-
 bool PowerAndId::operator<(const PowerAndId& other) const {
     if (m_strength < other.m_strength)
         return true;
