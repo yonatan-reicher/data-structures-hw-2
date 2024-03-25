@@ -39,14 +39,41 @@ StatusType olympics_t::remove_team(int teamId)
 
 StatusType olympics_t::add_player(int teamId, int playerStrength)
 {
-	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    if (teamId <= 0 || playerStrength <= 0) return StatusType::INVALID_INPUT;
+    if (!m_teams.contains(teamId)) return StatusType::FAILURE;
+
+    Team& team = *m_teams.get(teamId);
+    PowerAndId oldKey = PowerAndId(team.getPower(), teamId);
+
+    team.addPlayer(playerStrength);
+    PowerAndId newKey = PowerAndId(team.getPower(), teamId);
+
+    // Update the power tree! Wappaooh!
+    if (m_teamsByPower.contains(oldKey)) m_teamsByPower.remove(oldKey);
+    m_teamsByPower.insert(newKey, &team);
+
+    return StatusType::SUCCESS;
 }
 
 StatusType olympics_t::remove_newest_player(int teamId)
 {
-	// TODO: Your code goes here
-	return StatusType::SUCCESS;
+    if (teamId <= 0) return StatusType::INVALID_INPUT;
+    if (!m_teams.contains(teamId)) return StatusType::FAILURE;
+
+    Team& team = *m_teams.get(teamId);
+    PowerAndId oldKey = PowerAndId(team.getPower(), teamId);
+
+    if (team.size() == 0) return StatusType::FAILURE;
+
+    bool removed = team.removeNewestPlayer();
+    assert(removed);
+    PowerAndId newKey = PowerAndId(team.getPower(), teamId);
+
+    // Update the power tree.
+    if (m_teamsByPower.contains(oldKey)) m_teamsByPower.remove(oldKey);
+    if (m_teamsByPower.size() > 0) m_teamsByPower.insert(newKey, &team);
+
+    return StatusType::SUCCESS;
 }
 
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
