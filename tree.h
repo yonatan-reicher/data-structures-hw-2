@@ -409,14 +409,14 @@ const std::unique_ptr<Node<K, T>>& getByIndex(const std::unique_ptr<Node<K, T>>&
     return getByIndex(root->getRight(), index - leftSize - 1);
 }
 
-// Gets and sets the branch sum (= sum of partial sums) of a given node.
+// Gets and sets the branch sum (= sum of addWins) of a given node.
 template <class K, class T>
 int branchSum(Node<K, T>* root, const K& key, int value) {
     if (root == nullptr) return 0;
 
     if (root->key == key) {
-        int previous = root->partialSum();
-        root->partialSum() = value;
+        int previous = root->addWins();
+        root->setAddWins(value);
         return previous;
     }
 
@@ -439,10 +439,10 @@ void addBranchSumUpTo(Node<K, T>* root, int i, int add) {
 
     int rootIndex = count(root->getLeft());
     if (rootIndex <= i) {
-        root->partialSum() += add;
+        root->addWins() += add;
         // Offset the right branch so we only increase to the left.
         if (root->getRight()) {
-            root->getRight()->partialSum() -= add;
+            root->getRight()->addWins() -= add;
         }
 
         addBranchSumUpTo(root->getRight(), i - rootIndex - 1, add);

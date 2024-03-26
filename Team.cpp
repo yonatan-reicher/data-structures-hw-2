@@ -55,3 +55,9 @@ int Team::getPower() const
     int medianStrength = m_players.middleKey();
     return medianStrength * size();
 }
+
+template <>
+int getPower(const std::unique_ptr<Team>& data)
+{
+    return data->getPower();
+}

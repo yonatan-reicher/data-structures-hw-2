@@ -32,6 +32,12 @@ int count(const std::unique_ptr<Node<K, T>>& root) {
     return root->m_count;
 }
 
+// This mostly exists to allow Team to specialize it.
+template <class T>
+int getPower(const T& data) {
+    return 0;
+}
+
 template <class K, class T>
 class Node {
     std::unique_ptr<Node> m_left;
@@ -39,11 +45,9 @@ class Node {
     int m_height;
     // The number of nodes in the subtree including this node.
     int m_count;
-    // This field is the `Ido Galil` field for our purposes. This will probably
-    // only be used for the sum of wins a team has gained in this homework
-    // project.
-    int m_partialSum;
-    // TODO: Add a maxRank field.
+    // This field is the `Ido Galil` field for our purposes.
+    int m_addWins;
+    int m_maxRank;
 public:
     K key;
     T data;
@@ -51,7 +55,7 @@ public:
     Node(K key, T data)
         : m_left(nullptr), m_right(nullptr)
         , m_height(0)
-        , m_partialSum(0)
+        , m_addWins(0)
         , key(std::move(key))
         , data(std::move(data))
     {
@@ -92,12 +96,17 @@ public:
         return m_right;
     }
 
-    int partialSum() const {
-        return m_partialSum;
+    int addWins() const {
+        return m_addWins;
     }
 
-    int& partialSum() {
-        return m_partialSum;
+    void setAddWins(int newAddWins) {
+        m_addWins = newAddWins;
+        updateMaxRank();
+    }
+
+    int maxRank() const {
+        return m_maxRank;
     }
 
 private:
@@ -106,15 +115,28 @@ private:
         m_count = 1 + count(m_left) + count(m_right);
     }
 
-    void onChildIn(Node* child) const {
+    void onChildIn(Node* child) {
         if (!child) return;
-        child->m_partialSum -= m_partialSum;
+        child->m_addWins -= m_addWins;
+        updateMaxRank();
     }
 
-    void onChildOut(Node* child) const {
+    void onChildOut(Node* child) {
         if (!child) return;
-        child->m_partialSum += m_partialSum;
+        child->m_addWins += m_addWins;
+        updateMaxRank();
     }
+
+    void updateMaxRank() {
+        m_maxRank = m_addWins + std::max(
+            std::max(
+                m_left ? m_left->maxRank() : 0,
+                m_right ? m_right->maxRank() : 0
+            ),
+            getPower(data)
+        );
+    }
+
 
     template <class L, class U>
     friend int height(const std::unique_ptr<Node<L, U>>&);
