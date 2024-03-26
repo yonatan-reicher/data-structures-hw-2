@@ -1,4 +1,5 @@
 #include "Team.h"
+#include "Player.h"
 
 Team::Team(int teamId) : m_teamId(teamId), m_players(), m_newest(nullptr)
 {
@@ -12,7 +13,9 @@ int Team::teamId() const
 
 void Team::addPlayer(int playerStrength)
 {
-    Player& p = m_players.insert(playerStrength, Player(playerStrength));
+    std::unique_ptr<Player> player(new Player(playerStrength));
+    Player& p = *player;
+    m_players.insert(playerStrength, std::move(player));
     
     p.setPrev(m_newest);
     m_newest = &p;

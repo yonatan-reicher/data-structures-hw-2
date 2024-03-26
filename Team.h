@@ -6,7 +6,7 @@
 
 class Team {
     int m_teamId;
-    Tree<int, Player> m_players; 
+    Tree<int, std::unique_ptr<Player>> m_players; 
     Player* m_newest;
 
 public:
