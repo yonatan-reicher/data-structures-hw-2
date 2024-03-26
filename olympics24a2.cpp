@@ -104,6 +104,7 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {
     // TODO: Your code goes here
+    // Why is there a static variable in my code?
     static int i = 0;
     return (i++==0) ? 11 : 2;
 }
