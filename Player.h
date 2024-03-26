@@ -7,6 +7,7 @@ class Player {
     Player* m_prev;
 
 public:
+    Player();
     Player(int strength);
 
     int strength() const;

@@ -1,5 +1,11 @@
 #include "Player.h"
 
+Player::Player()
+    : m_strength(0), m_next(nullptr), m_prev(nullptr)
+{
+    // nothing.
+}
+
 Player::Player(int strength)
     : m_strength(strength), m_next(nullptr), m_prev(nullptr)
 {
