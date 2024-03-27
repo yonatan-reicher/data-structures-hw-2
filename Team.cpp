@@ -139,3 +139,11 @@ void Team::mergeAndEat(Team& other) {
 
     m_players = std::move(newTree);
 }
+
+int Team::getTempWins() const {
+    return m_tempWins;
+}
+
+void Team::setTempWins(int m_tempWins) {
+    Team::m_tempWins = m_tempWins;
+}
