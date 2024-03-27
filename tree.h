@@ -442,12 +442,12 @@ void addBranchSumUpTo(Node<K, T>* root, int i, int add) {
         root->setAddWins(root->addWins() + add);
         // Offset the right branch so we only increase to the left.
         if (root->getRight()) {
-            root->getRight()->addWins() -= add;
+            root->getRight()->setAddWins(root->addWins() - add);
         }
 
-        addBranchSumUpTo(root->getRight(), i - rootIndex - 1, add);
+        addBranchSumUpTo(root->getRight().get(), i - rootIndex - 1, add);
     } else {
-        addBranchSumUpTo(root->getLeft(), i, add);
+        addBranchSumUpTo(root->getLeft().get(), i, add);
     }
 }
 
