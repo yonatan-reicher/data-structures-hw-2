@@ -174,7 +174,12 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
     int low = m_teamsByPower.getIndexOfLargerOrEqual(lowKey);
     int high = m_teamsByPower.getIndexOfSmallerOrEqual(highKey);
 
-    int i = high - low;
+    int i = high - low + 1;
+
+    if (1 == i)
+    {
+        return m_teamsByPower.getKeyByIndex(high).m_id;
+    }
 
     // Is the number of teams a power of 2?
     if ((i & (i - 1)) == 0) return StatusType::FAILURE;
