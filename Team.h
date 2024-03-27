@@ -3,11 +3,14 @@
 
 #include "tree.h"
 #include "Player.h"
+#include "PowerAndId.h"
+class PowerAndId;
 
 class Team {
     int m_id;
-    Tree<int, std::unique_ptr<Player>> m_players; 
+    Tree<PowerAndId, std::unique_ptr<Player>> m_players; 
     Player* m_newest;
+    int m_nextId;
 
 public:
     Team(int teamId);

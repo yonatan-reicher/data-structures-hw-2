@@ -2,13 +2,16 @@
 #define PLAYER_H
 
 class Player {
+    int m_id;
     int m_strength;
     Player* m_next;
     Player* m_prev;
 
 public:
     Player();
-    Player(int strength);
+    Player(int strength, int id);
+
+    int id() const;
 
     int strength() const;
 

@@ -6,8 +6,8 @@ Player::Player()
     // nothing.
 }
 
-Player::Player(int strength)
-    : m_strength(strength), m_next(nullptr), m_prev(nullptr)
+Player::Player(int strength, int id)
+    : m_id(id), m_strength(strength), m_next(nullptr), m_prev(nullptr)
 {
     // nothing.
 }

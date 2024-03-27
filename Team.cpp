@@ -13,9 +13,11 @@ int Team::id() const
 
 void Team::addPlayer(int playerStrength)
 {
-    std::unique_ptr<Player> player(new Player(playerStrength));
+    int id = m_nextId++;
+    PowerAndId key(playerStrength, id);
+    std::unique_ptr<Player> player(new Player(playerStrength, id));
     Player& p = *player;
-    m_players.insert(playerStrength, std::move(player));
+    m_players.insert(key, std::move(player));
     
     p.setPrev(m_newest);
     m_newest = &p;
