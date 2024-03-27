@@ -66,6 +66,9 @@ int Team::getPower() const
 template <>
 int getPower(const std::unique_ptr<Team>& data)
 {
+    if (data == nullptr) {
+        return 0;
+    }
     return data->getPower();
 }
 
