@@ -36,6 +36,6 @@ public:
 
 // Specialization for Team so only it uses maxRank!
 template <>
-int getPower(const std::unique_ptr<Team>& data);
+int getPower(Team* const& data);
 
 #endif

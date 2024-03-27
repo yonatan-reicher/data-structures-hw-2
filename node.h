@@ -135,7 +135,7 @@ private:
                 m_left ? m_left->maxRank() : 0,
                 m_right ? m_right->maxRank() : 0
             ),
-            getPower(data)
+            getPower<T>(data)
         );
     }
 
