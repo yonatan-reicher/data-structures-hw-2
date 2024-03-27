@@ -1,0 +1,14 @@
+add_team 6
+add_team 1
+remove_team 4
+play_tournament 8 1
+play_match 1 3
+add_team 9
+add_team -3
+num_wins_for_team -1
+add_player 2 0
+play_tournament 0 4
+add_team 2
+add_player -4 -2
+num_wins_for_team 5
+get_highest_ranked_team 
