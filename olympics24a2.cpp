@@ -138,8 +138,11 @@ output_t<int> olympics_t::num_wins_for_team(int teamId)
 
 output_t<int> olympics_t::get_highest_ranked_team()
 {
-	// TODO: Your code goes here
-    return 42;
+    if (0 == m_teams.size())
+    {
+        return -1;
+    }
+    return m_teamsByPower.getMaxRank();
 }
 
 StatusType olympics_t::unite_teams(int teamId1, int teamId2)
