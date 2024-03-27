@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, List, Union
+from typing import Callable, List
 from random import randint, choice
 
 
@@ -12,6 +12,8 @@ class Command:
 @dataclass
 class Player:
     strength: int
+
+    def show(self): return str(self.strength)
 
 @dataclass
 class Team:
@@ -31,6 +33,8 @@ class Team:
             return 0
         return self.strength() + self.wins
 
+    def show(self): return f"Team {self.id} w={self.wins} [{','.join(p.show() for p in self.players)}]"
+
 @dataclass
 class State:
     teams: List[Team]
@@ -40,6 +44,8 @@ class State:
 
     def team(self, team_id: int):
         return next(team for team in self.teams if team.id == team_id)
+
+    def show(self): return 'State:\n\t' + '\n\t'.join(t.show() for t in self.teams)
 
 @dataclass
 class Output:
@@ -164,17 +170,17 @@ def run_exe(stdin: str) -> str:
     return p.stdout.decode().strip()
 
 
-def generate_command():
-    ARG_MIN = -5
-    ARG_MAX = 10
-    command_key = choice(['add_team'] + list(commands.keys()))
+def generate_command(inp_min=-1, inp_max=2):
+    command_keys = list(commands.keys())
+    command_keys += 3 * ['add_team', 'add_player']
+    command_key = choice(command_keys)
     command = commands[command_key]
-    args = [ randint(ARG_MIN, ARG_MAX) for _ in range(command.arity) ]
+    args = [ randint(inp_min, inp_max) for _ in range(command.arity) ]
     return f'{command_key} {" ".join(map(str, args))}'
 
-def generate_input():
-    N = randint(1, 20)
-    return '\n'.join([generate_command() for _ in range(N)])
+def generate_input(length=20, inp_min=-1, inp_max=2):
+    N = length
+    return '\n'.join([generate_command(inp_min=inp_min, inp_max=inp_max) for _ in range(N)])
 
 def run_command(state: State, line: str) -> str:
     command_name = line.split()[0]
@@ -189,30 +195,67 @@ def run_command(state: State, line: str) -> str:
     else:
         return f'{command_name}: {out}'
 
-def run_test(inp: str) -> str:
+def run_test(inp: str, trace=False) -> str:
     state = State([])
     output = []
     for line in inp.splitlines():
         output.append(run_command(state, line))
+        if trace:
+            print(line)
+            print(state.show())
     return '\n'.join(output)
 
-inp = generate_input()
-with open('last_input.txt', 'w') as f:
-    f.write(inp)
 
-py_out = run_test(inp).replace('\r\n', '\n') + '\n'
-cpp_out = run_exe(inp).replace('\r\n', '\n') + '\n'
+def run_single(inp = generate_input()):
+    LAST_INPUT = 'last_input.txt'
+    with open(LAST_INPUT, 'w') as f:
+        f.write(inp)
 
-import difflib
+    py_out = run_test(inp).replace('\r\n', '\n') + '\n'
+    cpp_out = run_exe(inp).replace('\r\n', '\n') + '\n'
 
-print('Equal? ', py_out == cpp_out)
-d = difflib.ndiff(
-    py_out.splitlines(keepends=True),
-    cpp_out.splitlines(keepends=True),
-)
-print(''.join(d))
-exit()
-for (i, linediff) in enumerate(d):
-    print(f'At line {i + 1}:')
-    print(linediff)
+    import difflib
 
+    d = difflib.ndiff(
+        py_out.splitlines(keepends=True),
+        cpp_out.splitlines(keepends=True),
+    )
+    print('Showing diff between outputs for a random test!')
+    print(f'Original test input can be seen in {LAST_INPUT}')
+    print('Python output is the original (-) and cpp implmentation is the changes (+)!')
+    print(''.join(d))
+
+    fail = py_out != cpp_out
+
+    if fail:
+        print()
+        print('Uh-oh!')
+        print('You failed this test. Run again with state trace? (y/n)', end=' ')
+        c = None
+        while c not in {'y', 'n'}:
+            c = input()
+
+        if c == 'y':
+            run_test(inp, True)
+
+
+def run_iterativly_until_error(start_N = 1, max_N = 100, inp_min=-1, inp_max=2):
+    if start_N > max_N: return None
+
+    Q = (inp_max - inp_min + 1) * start_N * commands.keys().__len__()
+    for _ in range(0, Q):
+        test = generate_input(start_N, inp_min, inp_max)
+        py_out = run_test(test).replace('\r\n', '\n') + '\n'
+        cpp_out = run_exe(test).replace('\r\n', '\n') + '\n'
+        if py_out != cpp_out:
+            return test
+    return run_iterativly_until_error(
+        start_N + 1,
+        max_N,
+        inp_min,
+        inp_max,
+    )
+
+bad_test = run_iterativly_until_error(1, 100, -1, 2)
+if bad_test:
+    run_single(bad_test)

@@ -142,6 +142,10 @@ output_t<int> olympics_t::get_highest_ranked_team()
     {
         return -1;
     }
+    if (0 == m_teamsByPower.size())
+    {
+        return 0;
+    }
     return m_teamsByPower.getMaxRank();
 }
 

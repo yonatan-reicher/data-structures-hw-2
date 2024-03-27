@@ -67,8 +67,8 @@ public:
         onChildIn(newLeft.get());
         std::unique_ptr<Node> ret = std::move(m_left);
         m_left = std::move(newLeft);
-        updateHeightAndCount();
         onChildOut(ret.get());
+        updateHeightAndCount();
         return ret;
     }
 
@@ -76,8 +76,8 @@ public:
         onChildIn(newRight.get());
         std::unique_ptr<Node> ret = std::move(m_right);
         m_right = std::move(newRight);
-        updateHeightAndCount();
         onChildOut(ret.get());
+        updateHeightAndCount();
         return ret;
     }
 
@@ -114,18 +114,19 @@ private:
     void updateHeightAndCount() {
         m_height = 1 + std::max(height(m_left), height(m_right));
         m_count = 1 + count(m_left) + count(m_right);
+        updateMaxRank();
     }
 
     void onChildIn(Node* child) {
         if (!child) return;
         child->m_addWins -= m_addWins;
-        updateMaxRank();
+        child->updateMaxRank();
     }
 
     void onChildOut(Node* child) {
         if (!child) return;
         child->m_addWins += m_addWins;
-        updateMaxRank();
+        child->updateMaxRank();
     }
 
     void updateMaxRank() {
