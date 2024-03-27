@@ -449,7 +449,7 @@ int countSmaller(const std::unique_ptr<Node<K, T>>& root, const K& key) {
         return 0;
     }
 
-    if (root->key == key) return 1;
+    if (root->key == key) return 0;
 
     if (root->key > key) return countSmaller(root->getLeft(), key);
 
