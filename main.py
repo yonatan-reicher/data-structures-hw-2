@@ -166,7 +166,7 @@ commands = {
 
 def run_exe(stdin: str) -> str:
     import subprocess
-    cmd = ['timeout', 'main.exe', '20']
+    cmd = ['main.exe']
     p = subprocess.run(cmd, capture_output=True, input=stdin.encode())
     return p.stdout.decode().strip()
 
@@ -247,11 +247,14 @@ def run_iterativly_until_error(start_N = 1, max_N = 100, inp_min=-1, inp_max=2):
     
     Q = (inp_max - inp_min + 1) * start_N * commands.keys().__len__()
     for _ in range(0, Q):
+        print('.', end='', flush=True)
         test = generate_input(start_N, inp_min, inp_max)
         py_out = run_test(test).replace('\r\n', '\n') + '\n'
         cpp_out = run_exe(test).replace('\r\n', '\n') + '\n'
         if py_out != cpp_out:
+            print('!')
             return test
+    print('!')
     return run_iterativly_until_error(
         start_N + 1,
         max_N,

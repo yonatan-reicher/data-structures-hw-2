@@ -113,7 +113,7 @@ output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 
     m_teamsByPower.addWinsInRange(winnerIndex, winnerIndex, 1);
 
-    return StatusType::SUCCESS;
+    return m_teamsByPower.getKeyByIndex(winnerIndex).m_id;
 }
 
 output_t<int> olympics_t::num_wins_for_team(int teamId)
@@ -158,9 +158,16 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
     Team& team1 = *m_teams.get(teamId1);
     Team& team2 = *m_teams.get(teamId2);
 
+    PowerAndId oldKey(team1.getPower(), teamId1);
     team1.mergeAndEat(team2);
     StatusType remove_ret = remove_team(teamId2);
     assert(remove_ret == StatusType::SUCCESS);
+
+    if (m_teamsByPower.contains(oldKey)) m_teamsByPower.remove(oldKey);
+    if (team1.size() > 0) {
+        m_teamsByPower.insert(PowerAndId(team1.getPower(), teamId1), &team1);
+    }
+
     return StatusType::SUCCESS;
 }
 
@@ -176,6 +183,7 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 
     int i = high - low + 1;
 
+    if (i < 1) return StatusType::FAILURE;
     if (1 == i)
     {
         return m_teamsByPower.getKeyByIndex(high).m_id;

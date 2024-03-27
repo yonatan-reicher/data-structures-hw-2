@@ -1,9 +1,11 @@
-add_player 1 0
+add_team 4
+add_player 4 4
+add_player 2 4
 add_team 2
-num_wins_for_team 2
-add_player -1 0
-unite_teams -1 0
-add_player 2 2
+add_team 5
+add_player 5 5
 play_tournament 1 2
-add_team 1
-remove_team 2
+add_team 5
+add_team 5
+add_player 5 3
+play_match 4 5
