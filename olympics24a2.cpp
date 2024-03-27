@@ -71,23 +71,69 @@ StatusType olympics_t::remove_newest_player(int teamId)
     PowerAndId newKey = PowerAndId(team.getPower(), teamId);
 
     // Update the power tree.
+    int wins = m_teamsByPower.wins(oldKey);
     if (m_teamsByPower.contains(oldKey)) m_teamsByPower.remove(oldKey);
-    if (m_teamsByPower.size() > 0) m_teamsByPower.insert(newKey, &team);
+    if (team.size() > 0) m_teamsByPower.insert(newKey, &team);
+    else
+    {
+        team.setTempWins(wins);
+    }
 
     return StatusType::SUCCESS;
 }
 
 output_t<int> olympics_t::play_match(int teamId1, int teamId2)
 {
-    // TODO: Your code goes here
-    return 2008;
+    if(teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+    if(!m_teams.contains(teamId1) || !m_teams.contains(teamId2)
+        || 0 == m_teams.get(teamId1)->size() || 0 == m_teams.get(teamId2)->size())
+    {
+        return StatusType::FAILURE;
+    }
+
+    Team& team1 = *m_teams.get(teamId1);
+    Team& team2 = *m_teams.get(teamId2);
+    int winnerIndex;
+
+    if(team1.getPower() == team2.getPower())
+    {
+        winnerIndex = teamId1 < teamId2
+            ? m_teamsByPower.getIndex(PowerAndId(team1.getPower(), teamId1))
+            : m_teamsByPower.getIndex(PowerAndId(team2.getPower(), teamId2));
+    }
+    else
+    {
+        winnerIndex = team1.getPower() > team2.getPower()
+            ? m_teamsByPower.getIndex(PowerAndId(team1.getPower(), teamId1))
+            : m_teamsByPower.getIndex(PowerAndId(team2.getPower(), teamId2));
+    }
+
+    m_teamsByPower.addWinsInRange(winnerIndex, winnerIndex, 1);
+
+    return StatusType::SUCCESS;
 }
 
 output_t<int> olympics_t::num_wins_for_team(int teamId)
 {
-    // TODO: Your code goes here
-    static int i = 0;
-    return (i++==0) ? 11 : 2;
+    if(teamId <= 0)
+    {
+        return StatusType::INVALID_INPUT;
+    }
+    if(!m_teams.contains(teamId))
+    {
+        return StatusType::FAILURE;
+    }
+
+    Team& team = *m_teams.get(teamId);
+    if(0 == team.size())
+    {
+        return team.getTempWins();
+    }
+
+    return m_teamsByPower.wins(PowerAndId(team.getPower(), teamId));
 }
 
 output_t<int> olympics_t::get_highest_ranked_team()
