@@ -452,6 +452,20 @@ void addBranchSumUpTo(Node<K, T>* root, int i, int add) {
 }
 
 template <class K, class T>
+int countSmaller(const std::unique_ptr<Node<K, T>>& root, const K& key) {
+    if (root == nullptr) {
+        return 0;
+    }
+
+    if (root->key == key) return 1;
+
+    if (root->key > key) return countSmaller(root->getLeft(), key);
+
+    int leftSize = count(root->getLeft()) + 1;
+    return leftSize + countSmaller(root->getRight(), key);
+}
+
+template <class K, class T>
 class Tree {
 private:
     using TreeNode = Node<K, T>;
@@ -463,6 +477,7 @@ private:
     TreeNode* m_middle;
 
     void updateMinAndMaxAndMiddle() {
+        countSmaller(nullptr, 0);
         std::unique_ptr<TreeNode>& min = const_cast<std::unique_ptr<TreeNode>&>(getMinimum(root));
         std::unique_ptr<TreeNode>& max = const_cast<std::unique_ptr<TreeNode>&>(getMaximum(root));
         m_minimum = min == nullptr ? nullptr : min.get();
@@ -614,6 +629,18 @@ public:
         ret.m_size = size;
         ret.updateMinAndMaxAndMiddle();
         return ret;
+    }
+
+    int getIndex(const K& key) const {
+        return countSmaller(root, key);
+    }
+
+    int getIndexOfSmallerOrEqual(const K& key) const {
+        return countSmaller(root, key) + contains(key) ? 1 : 0;
+    }
+
+    int getIndexOfLargerOrEqual(const K& key) const {
+        return size() - countSmaller(key);
     }
 
     friend auto operator<<(std::ostream& os, const Tree& tree) -> std::ostream& { 
