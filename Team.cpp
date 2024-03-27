@@ -69,6 +69,13 @@ int getPower(const std::unique_ptr<Team>& data)
 
 using P = std::unique_ptr<Player>;
 
+void addToId(P* array[], int size, int add) {
+    for (int i = 0; i < size; i++) {
+        P& p = *array[i];
+        p->setId(p->id() + add);
+    }
+}
+
 void combine(P* array1[], int size1, P* array2[], int size2, P dest[]) {
     int i = 0;
     int j = 0;
@@ -119,7 +126,7 @@ void Team::mergeAndEat(Team& other) {
         m_newest = other.m_newest;
     }
     
-    // TODO: Is this correct? Also, we should implement combine and check that everything is deleted correctly.
+    addToId(hisPlayers.get(), hisSize, m_nextId);
     combine(
         myPlayers.get(), mySize,
         hisPlayers.get(), hisSize,

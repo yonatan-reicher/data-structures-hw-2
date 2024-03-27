@@ -14,6 +14,7 @@ public:
     Player();
     Player(int strength, int id);
 
+    void setId(int id);
     int id() const;
 
     int strength() const;

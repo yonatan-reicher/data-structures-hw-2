@@ -1,4 +1,5 @@
 #include "olympics24a2.h"
+#include <numeric>
 
 olympics_t::olympics_t()
 {
@@ -113,8 +114,22 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {
-    // TODO: Your code goes here
-    // Why is there a static variable in my code?
-    static int i = 0;
-    return (i++==0) ? 11 : 2;
+    if (lowPower <= 0 || highPower <= 0 || lowPower > highPower) return StatusType::INVALID_INPUT;
+
+    PowerAndId lowKey = PowerAndId(lowPower, std::numeric_limits<int>::max());
+    PowerAndId highKey = PowerAndId(highPower, std::numeric_limits<int>::min());
+    int low = m_teamsByPower.getIndexOfLargerOrEqual(lowKey);
+    int high = m_teamsByPower.getIndexOfSmallerOrEqual(highKey);
+
+    int i = high - low;
+
+    // Is the number of teams a power of 2?
+    if ((i & (i - 1)) == 0) return StatusType::FAILURE;
+
+    while (i > 1) {
+        m_teamsByPower.addWinsInRange(high - i / 2, high, 1);
+        i = i / 2;
+    }
+
+    return m_teamsByPower.getKeyByIndex(high).m_id;
 }

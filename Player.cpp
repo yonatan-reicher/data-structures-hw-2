@@ -12,6 +12,11 @@ Player::Player(int strength, int id)
     // nothing.
 }
 
+void Player::setId(int id)
+{
+    m_id = id;
+}
+
 int Player::id() const
 {
     return m_id;
