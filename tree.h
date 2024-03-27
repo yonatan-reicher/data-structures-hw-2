@@ -445,9 +445,9 @@ void addBranchSumUpTo(Node<K, T>* root, int i, int add) {
             root->getRight()->setAddWins(root->addWins() - add);
         }
 
-        addBranchSumUpTo(root->getRight(), i - rootIndex - 1, add);
+        addBranchSumUpTo(root->getRight().get(), i - rootIndex - 1, add);
     } else {
-        addBranchSumUpTo(root->getLeft(), i, add);
+        addBranchSumUpTo(root->getLeft().get(), i, add);
     }
 }
 
