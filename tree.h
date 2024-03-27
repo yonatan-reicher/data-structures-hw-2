@@ -466,6 +466,17 @@ int countSmaller(const std::unique_ptr<Node<K, T>>& root, const K& key) {
 }
 
 template <class K, class T>
+const K& getKeyByIndex(const std::unique_ptr<Node<K, T>>& root, int i) {
+    int c = count(root);
+    if (c <= 1) return root->key;
+    
+    int leftCount = count(root->getLeft());
+    if (leftCount == i) return root->key;
+    if (leftCount < i) return getKeyByIndex(root->getRight(), i - leftCount - 1);
+    return getKeyByIndex(root->getLeft(), i);
+}
+
+template <class K, class T>
 class Tree {
 private:
     using TreeNode = Node<K, T>;
@@ -641,6 +652,10 @@ public:
 
     int getIndexOfLargerOrEqual(const K& key) const {
         return size() - countSmaller(key);
+    }
+
+    const K& getKeyByIndex(int i) const {
+        return getKeyByIndex(root, i);
     }
 
     friend auto operator<<(std::ostream& os, const Tree& tree) -> std::ostream& { 
