@@ -5,14 +5,14 @@
 #include "Player.h"
 
 class Team {
-    int m_teamId;
+    int m_id;
     Tree<int, std::unique_ptr<Player>> m_players; 
     Player* m_newest;
 
 public:
     Team(int teamId);
 
-    int teamId() const;
+    int id() const;
 
     void addPlayer(int playerStrength);
 

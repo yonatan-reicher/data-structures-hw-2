@@ -1,14 +1,14 @@
 #include "Team.h"
 #include "Player.h"
 
-Team::Team(int teamId) : m_teamId(teamId), m_players(), m_newest(nullptr)
+Team::Team(int teamId) : m_id(teamId), m_players(), m_newest(nullptr)
 {
     // nothing.
 }
 
-int Team::teamId() const
+int Team::id() const
 {
-    return m_teamId;
+    return m_id;
 }
 
 void Team::addPlayer(int playerStrength)
