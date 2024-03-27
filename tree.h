@@ -488,7 +488,6 @@ private:
     TreeNode* m_middle;
 
     void updateMinAndMaxAndMiddle() {
-        countSmaller(nullptr, 0);
         std::unique_ptr<TreeNode>& min = const_cast<std::unique_ptr<TreeNode>&>(getMinimum(root));
         std::unique_ptr<TreeNode>& max = const_cast<std::unique_ptr<TreeNode>&>(getMaximum(root));
         m_minimum = min == nullptr ? nullptr : min.get();
@@ -651,11 +650,11 @@ public:
     }
 
     int getIndexOfLargerOrEqual(const K& key) const {
-        return size() - countSmaller(key);
+        return size() - countSmaller(root, key);
     }
 
     const K& getKeyByIndex(int i) const {
-        return getKeyByIndex(root, i);
+        return getByIndex(root, i)->key;
     }
 
     friend auto operator<<(std::ostream& os, const Tree& tree) -> std::ostream& { 

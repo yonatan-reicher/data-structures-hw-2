@@ -1,5 +1,5 @@
 #include "olympics24a2.h"
-#include <numeric>
+#include <limits>
 
 olympics_t::olympics_t()
 {
