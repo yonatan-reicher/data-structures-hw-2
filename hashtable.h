@@ -63,12 +63,14 @@ public:
     }
 
     void afterChange() {
-        // TODO: Add min size condition so we don't resize down after
-        // the first insert.
-        if ((double)m_size / m_cellsCount < MIN_LOAD_FACTOR) {
+        if ((double)m_size / m_cellsCount > MAX_LOAD_FACTOR) {
             rehash();
         }
-        if ((double)m_size / m_cellsCount > MAX_LOAD_FACTOR) {
+
+        // Don't resize down if we are at the minimum size!
+        if (m_size < START_CELLS) return;
+
+        if ((double)m_size / m_cellsCount < MIN_LOAD_FACTOR) {
             rehash();
         }
     }
