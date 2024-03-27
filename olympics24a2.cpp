@@ -97,9 +97,17 @@ output_t<int> olympics_t::get_highest_ranked_team()
 
 StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 {
-	// TODO: Your code goes here
-    return StatusType::SUCCESS;
+    if (teamId1 <= 0 || teamId2 <= 0 || teamId1 == teamId2) return StatusType::INVALID_INPUT;
+
+    if (!m_teams.contains(teamId1) || !m_teams.contains(teamId2)) return StatusType::FAILURE;
+
+    Team& team1 = *m_teams.get(teamId1);
+    Team& team2 = *m_teams.get(teamId2);
+
+    team1.mergeAndEat(team2);
+    remove_team(teamId2);
 }
+
 
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {

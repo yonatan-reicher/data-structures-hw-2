@@ -21,6 +21,8 @@ public:
     bool removeNewestPlayer();
 
     int getPower() const;
+
+    int mergeAndEat(Team& other);
 };
 
 // Specialization for Team so only it uses maxRank!
