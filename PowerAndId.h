@@ -2,9 +2,10 @@
 #define POWERANDID_H
 
 #include "Team.h"
+class Team;
 
 struct PowerAndId {
-    int m_strength;
+    int m_power;
     int m_id;
 
     PowerAndId(int power, int id);

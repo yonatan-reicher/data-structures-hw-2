@@ -1,16 +1,18 @@
 #include "PowerAndId.h"
 
-PowerAndId::PowerAndId(int strength, int id) {
-    this->m_strength = strength;
+PowerAndId::PowerAndId(int power, int id) {
+    this->m_power = power;
     this->m_id = id;
 }
 
 bool PowerAndId::operator<(const PowerAndId& other) const {
-    if (m_strength < other.m_strength)
+    // While higher power means higher order, lower id means higher order.
+    // This is because lower ids win in ties.
+    if (m_power < other.m_power)
         return true;
-    if (m_strength > other.m_strength)
+    if (m_power > other.m_power)
         return false;
-    return m_id < other.m_id;
+    return m_id > other.m_id;
 }
 
 bool PowerAndId::operator>(const PowerAndId& other) const {
@@ -18,6 +20,6 @@ bool PowerAndId::operator>(const PowerAndId& other) const {
 }
 
 bool PowerAndId::operator==(const PowerAndId& other) const {
-    return m_strength == other.m_strength && m_id == other.m_id;
+    return m_power == other.m_power && m_id == other.m_id;
 }
 
