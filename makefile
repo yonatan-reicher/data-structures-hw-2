@@ -5,6 +5,9 @@ CFLAGS = -std=c++11 -g -Wall
 
 SOURCES_NO_MAIN = $(filter-out main24a2.cpp,$(wildcard *.cpp))
 
+main:
+	$(CC) $(CFLAGS) -o main main24a2.cpp $(SOURCES_NO_MAIN)
+
 test:
 	$(CC) $(CFLAGS) -o test Tests/test1.cpp $(SOURCES_NO_MAIN)
 	./test

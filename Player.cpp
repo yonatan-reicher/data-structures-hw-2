@@ -12,9 +12,19 @@ Player::Player(int strength, int id)
     // nothing.
 }
 
+int Player::id() const
+{
+    return m_id;
+}
+
 int Player::strength() const
 {
     return m_strength;
+}
+
+PowerAndId Player::key() const
+{
+    return PowerAndId(m_strength, m_id);
 }
 
 Player* Player::next() const

@@ -105,7 +105,9 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
     Team& team2 = *m_teams.get(teamId2);
 
     team1.mergeAndEat(team2);
-    remove_team(teamId2);
+    StatusType remove_ret = remove_team(teamId2);
+    assert(remove_ret == StatusType::SUCCESS);
+    return StatusType::SUCCESS;
 }
 
 

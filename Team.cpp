@@ -32,14 +32,14 @@ bool Team::removeNewestPlayer()
 
     if (m_newest->prev() == nullptr)
     {
-        m_players.remove(m_newest->strength());
+        m_players.remove(m_newest->key());
         m_newest = nullptr;
         assert(m_players.size() == 0);
         return true;
     }
 
     m_newest = m_newest->prev();
-    m_players.remove(m_newest->next()->strength());
+    m_players.remove(m_newest->next()->key());
     m_newest->setNext(nullptr);
     return true;
 }
@@ -57,7 +57,7 @@ int Team::getPower() const
         return 0;
     }
 
-    int medianStrength = m_players.middleKey();
+    int medianStrength = m_players.middleKey().m_power;
     return medianStrength * size();
 }
 
@@ -75,7 +75,7 @@ void combine(P* array1[], int size1, P* array2[], int size2, P dest[]) {
     while (i < size1 && j < size2) {
         P& p1 = *array1[i];
         P& p2 = *array2[j];
-        if (p1->strength() < p2->strength()) {
+        if (p1->key() < p2->key()) {
             dest[i + j] = std::move(p1);
             i++;
         } else {
@@ -97,11 +97,11 @@ void combine(P* array1[], int size1, P* array2[], int size2, P dest[]) {
     }
 }
 
-int playerStrength(P& p) {
-    return p->strength();
+PowerAndId playerKey(P& p) {
+    return p->key();
 }
 
-int Team::mergeAndEat(Team& other) {
+void Team::mergeAndEat(Team& other) {
     std::unique_ptr<P*[]> myPlayers(m_players.toArray());
     std::unique_ptr<P*[]> hisPlayers(other.m_players.toArray());
     int mySize = m_players.size();
@@ -126,8 +126,8 @@ int Team::mergeAndEat(Team& other) {
         newPlayers.get()
     );
 
-    Tree<int, P> newTree = Tree<int, P>::fromArray(
-        newPlayers.get(), mySize + hisSize, playerStrength
+    Tree<PowerAndId, P> newTree = Tree<PowerAndId, P>::fromArray(
+        newPlayers.get(), mySize + hisSize, playerKey
     );
 
     m_players = std::move(newTree);

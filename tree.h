@@ -373,7 +373,7 @@ std::unique_ptr<Node<K, T>> treeFromArray(T* array, int size, F& keyGenerator) {
         int rightSize = size / 2;
         K key = keyGenerator(array[leftSize]);
         std::unique_ptr<Node<K, T>> root = std::unique_ptr<Node<K, T>>(
-            new Node<K, T>(std::move(key), array[leftSize])
+            new Node<K, T>(std::move(key), std::move(array[leftSize]))
         );
         root->setLeft(treeFromArray<K, T, F>(array, leftSize, keyGenerator));
         root->setRight(treeFromArray<K, T, F>(array + leftSize + 1, rightSize, keyGenerator));
@@ -385,7 +385,7 @@ std::unique_ptr<Node<K, T>> treeFromArray(T* array, int size, F& keyGenerator) {
         int rightSize = size / 2;
         K key = keyGenerator(array[leftSize]);
         std::unique_ptr<Node<K, T>> root = std::unique_ptr<Node<K, T>>(
-            new Node<K, T>(std::move(key), array[leftSize])
+            new Node<K, T>(std::move(key), std::move(array[leftSize]))
         );
         root->setLeft(treeFromArray<K, T, F>(array, leftSize, keyGenerator));
         root->setRight(treeFromArray<K, T, F>(array + leftSize + 1, rightSize, keyGenerator));
@@ -601,6 +601,7 @@ public:
 
     // Input array must be deleted by the caller using delete[].
     // Input array MUST be sorted and have NO duplicates.
+    // The elements in the array are MOVED into the tree.
     // TODO: Maybe this should just be a constructor...
     template <class F>
     static Tree fromArray(T* array, int size, F& keyGenerator) {

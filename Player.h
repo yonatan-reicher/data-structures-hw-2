@@ -1,6 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "PowerAndId.h"
+class PowerAndId;
+
 class Player {
     int m_id;
     int m_strength;
@@ -14,6 +17,8 @@ public:
     int id() const;
 
     int strength() const;
+
+    PowerAndId key() const;
 
     Player* next() const;
 

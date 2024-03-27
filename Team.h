@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "PowerAndId.h"
 class PowerAndId;
+class Player;
 
 class Team {
     int m_id;
@@ -25,7 +26,7 @@ public:
 
     int getPower() const;
 
-    int mergeAndEat(Team& other);
+    void mergeAndEat(Team& other);
 };
 
 // Specialization for Team so only it uses maxRank!
