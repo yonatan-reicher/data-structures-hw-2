@@ -411,7 +411,7 @@ const std::unique_ptr<Node<K, T>>& getByIndex(const std::unique_ptr<Node<K, T>>&
 
 // Gets and sets the branch sum (= sum of addWins) of a given node.
 template <class K, class T>
-int wins(const std::unique_ptr<Node<K, T>>& root, const K& key) {
+int getWins(const std::unique_ptr<Node<K, T>>& root, const K& key) {
     if (root == nullptr) return 0;
 
     if (root->key == key) {
@@ -419,9 +419,9 @@ int wins(const std::unique_ptr<Node<K, T>>& root, const K& key) {
     }
 
     if (root->key < key) {
-        return root->addWins() + wins(root->getRight(), key);
+        return root->addWins() + getWins(root->getRight(), key);
     } else {
-        return root->addWins() + wins(root->getLeft(), key);
+        return root->addWins() + getWins(root->getLeft(), key);
     }
 }
 
@@ -540,7 +540,7 @@ public:
     // problem!
     // Note: Must be called on a key that is in the tree.
     int wins(const K& key) const {
-        return wins(root, key);
+        return getWins(root, key);
     }
 
     void addWinsInRange(int lowIndex, int highIndex, int add) {
