@@ -434,12 +434,15 @@ void addBranchSumUpTo(Node<K, T>* root, int i, int add) {
         root->setAddWins(root->addWins() + add);
         // Offset the right branch so we only increase to the left.
         if (root->getRight()) {
-            root->getRight()->setAddWins(root->getRight()->addWins() - add);
+            std::unique_ptr<Node<K, T>> right = root->popRight();
+            right->setAddWins(right->addWins() - add);
+            addBranchSumUpTo(right.get(), i - rootIndex - 1, add);
+            root->setRight(std::move(right));
         }
-
-        addBranchSumUpTo(root->getRight().get(), i - rootIndex - 1, add);
     } else {
-        addBranchSumUpTo(root->getLeft().get(), i, add);
+        std::unique_ptr<Node<K, T>> left = root->popLeft();
+        addBranchSumUpTo(left.get(), i, add);
+        root->setLeft(std::move(left));
     }
 }
 

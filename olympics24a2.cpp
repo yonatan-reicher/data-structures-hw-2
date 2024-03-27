@@ -11,6 +11,25 @@ olympics_t::~olympics_t()
     // nothing too!
 }
 
+void olympics_t::removeAndUpdateTeamFromPowerTree(PowerAndId key)
+{
+    if (!m_teamsByPower.contains(key)) return;
+
+    int wins = m_teamsByPower.wins(key);
+    Team& team = *m_teamsByPower.get(key);
+    team.setTempWins(wins);
+    m_teamsByPower.remove(key);
+}
+
+void olympics_t::insertAndUpdateTeamFromPowerTree(Team& team)
+{
+    if (team.size() == 0) return;
+
+    PowerAndId key = PowerAndId(team.getPower(), team.id());
+    m_teamsByPower.insert(key, &team);
+    int index = m_teamsByPower.getIndex(key);
+    m_teamsByPower.addWinsInRange(index, index, team.getTempWins());
+}
 
 StatusType olympics_t::add_team(int teamId)
 {
@@ -28,9 +47,7 @@ StatusType olympics_t::remove_team(int teamId)
 
     // Tree
     PowerAndId key = PowerAndId(m_teams.get(teamId)->getPower(), teamId);
-    if (m_teamsByPower.contains(key)) {
-        m_teamsByPower.remove(key);
-    }
+    removeAndUpdateTeamFromPowerTree(key);
 
     // Table! The return value is ignored so it's destructor is called and the
     // team is no more!
@@ -47,11 +64,10 @@ StatusType olympics_t::add_player(int teamId, int playerStrength)
     PowerAndId oldKey = PowerAndId(team.getPower(), teamId);
 
     team.addPlayer(playerStrength);
-    PowerAndId newKey = PowerAndId(team.getPower(), teamId);
 
     // Update the power tree! Wappaooh!
-    if (m_teamsByPower.contains(oldKey)) m_teamsByPower.remove(oldKey);
-    m_teamsByPower.insert(newKey, &team);
+    removeAndUpdateTeamFromPowerTree(oldKey);
+    insertAndUpdateTeamFromPowerTree(team);
 
     return StatusType::SUCCESS;
 }
@@ -68,16 +84,10 @@ StatusType olympics_t::remove_newest_player(int teamId)
 
     bool removed = team.removeNewestPlayer();
     assert(removed);
-    PowerAndId newKey = PowerAndId(team.getPower(), teamId);
 
     // Update the power tree.
-    int wins = m_teamsByPower.wins(oldKey);
-    if (m_teamsByPower.contains(oldKey)) m_teamsByPower.remove(oldKey);
-    if (team.size() > 0) m_teamsByPower.insert(newKey, &team);
-    else
-    {
-        team.setTempWins(wins);
-    }
+    removeAndUpdateTeamFromPowerTree(oldKey);
+    insertAndUpdateTeamFromPowerTree(team);
 
     return StatusType::SUCCESS;
 }
@@ -163,10 +173,9 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
     StatusType remove_ret = remove_team(teamId2);
     assert(remove_ret == StatusType::SUCCESS);
 
-    if (m_teamsByPower.contains(oldKey)) m_teamsByPower.remove(oldKey);
-    if (team1.size() > 0) {
-        m_teamsByPower.insert(PowerAndId(team1.getPower(), teamId1), &team1);
-    }
+    // Update the power tree!
+    removeAndUpdateTeamFromPowerTree(oldKey);
+    insertAndUpdateTeamFromPowerTree(team1);
 
     return StatusType::SUCCESS;
 }
@@ -190,7 +199,7 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
     }
 
     // Is the number of teams a power of 2?
-    if ((i & (i - 1)) == 0) return StatusType::FAILURE;
+    if ((i & (i - 1)) != 0) return StatusType::FAILURE;
 
     while (i > 1) {
         m_teamsByPower.addWinsInRange(high - i / 2, high, 1);

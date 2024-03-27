@@ -89,10 +89,12 @@ public:
         return setRight(nullptr);
     }
 
+    // TODO: Make const.
     const std::unique_ptr<Node>& getLeft() const {
         return m_left;
     }
 
+    // TODO: Make const.
     const std::unique_ptr<Node>& getRight() const {
         return m_right;
     }

@@ -29,6 +29,9 @@ private:
     // elements so without unique_ptr we would not be able to take the address
     // of the teams!
     HashTable<int, std::unique_ptr<Team>> m_teams;
+
+    void removeAndUpdateTeamFromPowerTree(PowerAndId key);
+    void insertAndUpdateTeamFromPowerTree(Team&);
 	
 public:
 	// <DO-NOT-MODIFY> {

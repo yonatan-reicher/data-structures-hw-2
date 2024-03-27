@@ -149,6 +149,7 @@ def play_tournament(state: State, low_power: int, high_power: int):
         for i in range(0, half):
             winner = play_match(state, teams[i].id, teams[half + i].id).value
             next_teams.append(state.team(winner))
+        teams = next_teams
     return Output(SUCCESS, teams[0].id)
 
 commands = {
