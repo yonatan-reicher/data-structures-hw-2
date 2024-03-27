@@ -1,7 +1,9 @@
 #include "Team.h"
 #include "Player.h"
 
-Team::Team(int teamId) : m_id(teamId), m_players(), m_newest(nullptr)
+Team::Team(int teamId)
+    : m_id(teamId), m_players(), m_newest(nullptr)
+    , m_nextId(1), m_tempWins(0)
 {
     // nothing.
 }
