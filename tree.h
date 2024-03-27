@@ -636,11 +636,11 @@ public:
     }
 
     int getIndexOfSmallerOrEqual(const K& key) const {
-        return countSmaller(root, key) + contains(key) ? 1 : 0;
+        return countSmaller(root, key) + (contains(key) ? 0 : -1);
     }
 
     int getIndexOfLargerOrEqual(const K& key) const {
-        return size() - countSmaller(root, key);
+        return countSmaller(root, key);
     }
 
     const K& getKeyByIndex(int i) const {
