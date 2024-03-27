@@ -56,6 +56,7 @@ public:
         : m_left(nullptr), m_right(nullptr)
         , m_height(0)
         , m_addWins(0)
+        , m_maxRank(0)
         , key(std::move(key))
         , data(std::move(data))
     {
