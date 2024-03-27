@@ -96,6 +96,8 @@ def play_match(state: State, team_id1: int, team_id2: int):
         return Output(INVALID_INPUT, 0)
     if not state.team_exists(team_id1) or not state.team_exists(team_id2):
         return Output(FAILURE, 0)
+    if state.team(team_id1).players == [] or state.team(team_id2).players == []:
+        return Output(FAILURE, 0)
 
     team1 = state.team(team_id1)
     team2 = state.team(team_id2)
@@ -147,7 +149,7 @@ def play_tournament(state: State, low_power: int, high_power: int):
         for i in range(0, half):
             winner = play_match(state, teams[i].id, teams[half + i].id).value
             next_teams.append(state.team(winner))
-    return teams[0].id if teams else None
+    return Output(SUCCESS, teams[0].id)
 
 commands = {
     'add_team': Command(1, add_team),
@@ -164,8 +166,7 @@ commands = {
 
 def run_exe(stdin: str) -> str:
     import subprocess
-    import sys
-    cmd = ['main.exe']
+    cmd = ['timeout', 'main.exe', '20']
     p = subprocess.run(cmd, capture_output=True, input=stdin.encode())
     return p.stdout.decode().strip()
 
@@ -242,6 +243,8 @@ def run_single(inp = generate_input()):
 def run_iterativly_until_error(start_N = 1, max_N = 100, inp_min=-1, inp_max=2):
     if start_N > max_N: return None
 
+    print(f'Testing with N = {start_N}')
+    
     Q = (inp_max - inp_min + 1) * start_N * commands.keys().__len__()
     for _ in range(0, Q):
         test = generate_input(start_N, inp_min, inp_max)
@@ -256,6 +259,6 @@ def run_iterativly_until_error(start_N = 1, max_N = 100, inp_min=-1, inp_max=2):
         inp_max,
     )
 
-bad_test = run_iterativly_until_error(1, 100, -1, 2)
+bad_test = run_iterativly_until_error(10, 100, 1, 5)
 if bad_test:
     run_single(bad_test)
