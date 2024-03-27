@@ -439,7 +439,7 @@ void addBranchSumUpTo(Node<K, T>* root, int i, int add) {
 
     int rootIndex = count(root->getLeft());
     if (rootIndex <= i) {
-        root->addWins() += add;
+        root->setAddWins(root->addWins() + add);
         // Offset the right branch so we only increase to the left.
         if (root->getRight()) {
             root->getRight()->addWins() -= add;
@@ -528,18 +528,22 @@ public:
         return result;
     }
 
-    void addBranchSumInRange(int lowIndex, int highIndex, int add) {
+    void addWinsInRange(int lowIndex, int highIndex, int add) {
         assert(lowIndex <= highIndex);
         assert(highIndex < m_size);
         assert(lowIndex >= 0);
         if (lowIndex > 0) {
-            addBranchSumInRange(0, highIndex, add);
-            addBranchSumInRange(0, lowIndex - 1, -add);
+            addWinsInRange(0, highIndex, add);
+            addWinsInRange(0, lowIndex - 1, -add);
             return;
         }
 
         assert(lowIndex == 0);
         addBranchSumUpTo(root.get(), highIndex, add);
+    }
+
+    int getMaxRank() const {
+        return m_size == 0 ? 0 : root->maxRank();
     }
 
     bool contains(const K& key) const {
