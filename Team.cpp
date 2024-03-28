@@ -125,6 +125,7 @@ Player* nextNewest(Player* team1Newest, Player* team2Newest) {
 void Team::mergeAndEat(Team& other) {
     int mySize = m_players.size();
     int hisSize = other.m_players.size();
+    int hisNextId = other.m_nextId;
 
     // First deal with the linked list.
     // This must be done before getting the arrays, because when gettting them,
@@ -150,7 +151,7 @@ void Team::mergeAndEat(Team& other) {
     );
 
     m_players = std::move(newTree);
-    m_nextId += hisSize;
+    m_nextId += hisNextId;
     // m_tempWins += other.m_tempWins;
     m_newest = nextNewest(newest1, newest2);
 }
