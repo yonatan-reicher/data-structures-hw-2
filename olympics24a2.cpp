@@ -187,7 +187,7 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
 
 output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
 {
-    if (lowPower <= 0 || highPower <= 0 || lowPower > highPower) return StatusType::INVALID_INPUT;
+    if (lowPower <= 0 || highPower <= 0 || lowPower >= highPower) return StatusType::INVALID_INPUT;
 
     PowerAndId lowKey = PowerAndId(lowPower, std::numeric_limits<int>::max());
     PowerAndId highKey = PowerAndId(highPower, std::numeric_limits<int>::min());
