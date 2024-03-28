@@ -51,8 +51,9 @@ public:
             // Iterate through the tree element by element.
             std::unique_ptr<K[]> keys;
             std::unique_ptr<V[]> values;
+            int treeSize = tree.size();
             tree.toArrays(keys, values);
-            for (int j = 0; j < tree.size(); j++) {
+            for (int j = 0; j < treeSize; j++) {
                 unsigned int index = hash(keys[j]) % newCellCount;
                 newArray[index].insert(std::move(keys[j]), std::move(values[j]));
             }
