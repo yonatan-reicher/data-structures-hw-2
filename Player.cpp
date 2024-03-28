@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "PowerAndId.h"
 
 Player::Player()
     : m_strength(0), m_next(nullptr), m_prev(nullptr)

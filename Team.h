@@ -3,7 +3,6 @@
 
 #include "tree.h"
 #include "Player.h"
-#include "PowerAndId.h"
 class PowerAndId;
 class Player;
 

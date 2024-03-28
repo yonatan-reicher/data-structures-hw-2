@@ -8,6 +8,7 @@ struct PowerAndId {
     int m_power;
     int m_id;
 
+    PowerAndId();
     PowerAndId(int power, int id);
     PowerAndId(const Team& team);
 

@@ -1,5 +1,6 @@
 #include "Team.h"
 #include "Player.h"
+#include "PowerAndId.h"
 
 Team::Team(int teamId)
     : m_id(teamId), m_players(), m_newest(nullptr)
@@ -74,19 +75,19 @@ int getPower(Team* const& data)
 
 using P = std::unique_ptr<Player>;
 
-void addToId(P* array[], int size, int add) {
+void addToId(P array[], int size, int add) {
     for (int i = 0; i < size; i++) {
-        P& p = *array[i];
+        P& p = array[i];
         p->setId(p->id() + add);
     }
 }
 
-void combine(P* array1[], int size1, P* array2[], int size2, P dest[]) {
+void combine(P array1[], int size1, P array2[], int size2, P dest[]) {
     int i = 0;
     int j = 0;
     while (i < size1 && j < size2) {
-        P& p1 = *array1[i];
-        P& p2 = *array2[j];
+        P& p1 = array1[i];
+        P& p2 = array2[j];
         if (p1->key() < p2->key()) {
             dest[i + j] = std::move(p1);
             i++;
@@ -97,13 +98,13 @@ void combine(P* array1[], int size1, P* array2[], int size2, P dest[]) {
     }
 
     while (i < size1) {
-        P& p1 = *array1[i];
+        P& p1 = array1[i];
         dest[i + j] = std::move(p1);
         i++;
     }
 
     while (j < size2) {
-        P& p2 = *array2[j];
+        P& p2 = array2[j];
         dest[i + j] = std::move(p2);
         j++;
     }
@@ -113,23 +114,29 @@ PowerAndId playerKey(P& p) {
     return p->key();
 }
 
+Player* nextNewest(Player* team1Newest, Player* team2Newest) {
+    if (team1Newest == nullptr) return team2Newest;
+    if (team2Newest == nullptr) return team1Newest;
+    Player* team2Oldest = team2Newest->getPreviest();
+    team1Newest->setNext(team2Oldest);
+    return team2Newest;
+}
+
 void Team::mergeAndEat(Team& other) {
-    std::unique_ptr<P*[]> myPlayers(m_players.toArray());
-    std::unique_ptr<P*[]> hisPlayers(other.m_players.toArray());
     int mySize = m_players.size();
     int hisSize = other.m_players.size();
-    std::unique_ptr<P[]> newPlayers(new P[mySize + hisSize]);
 
     // First deal with the linked list.
-    if (other.m_newest == nullptr) {
-        // Nothing!
-    } else if (m_newest == nullptr) {
-        m_newest = other.m_newest;
-    } else {
-        Player* hisOldest = other.m_newest->getPreviest();
-        m_newest->setNext(hisOldest);
-        m_newest = other.m_newest;
-    }
+    // This must be done before getting the arrays, because when gettting them,
+    // we remove all players and then other.m_newest must be nullptr.
+    Player* newest1 = m_newest;
+    Player* newest2 = other.m_newest;
+    m_newest = nullptr;
+    other.m_newest = nullptr;
+
+    std::unique_ptr<P[]> myPlayers(m_players.toArray());
+    std::unique_ptr<P[]> hisPlayers(other.m_players.toArray());
+    std::unique_ptr<P[]> newPlayers(new P[mySize + hisSize]);
     
     addToId(hisPlayers.get(), hisSize, m_nextId);
     combine(
@@ -143,6 +150,9 @@ void Team::mergeAndEat(Team& other) {
     );
 
     m_players = std::move(newTree);
+    m_nextId += hisSize;
+    // m_tempWins += other.m_tempWins;
+    m_newest = nextNewest(newest1, newest2);
 }
 
 int Team::getTempWins() const {

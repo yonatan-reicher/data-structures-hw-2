@@ -49,11 +49,12 @@ public:
             Tree<K, V>& tree = m_array[i];
 
             // Iterate through the tree element by element.
-            std::unique_ptr<K*[]> keys = std::unique_ptr<K*[]>(tree.keysToArray());
-            std::unique_ptr<V*[]> values = std::unique_ptr<V*[]>(tree.toArray());
+            std::unique_ptr<K[]> keys;
+            std::unique_ptr<V[]> values;
+            tree.toArrays(keys, values);
             for (int j = 0; j < tree.size(); j++) {
-                unsigned int index = hash(*keys[j]) % newCellCount;
-                newArray[index].insert(std::move(*keys[j]), std::move(*values[j]));
+                unsigned int index = hash(keys[j]) % newCellCount;
+                newArray[index].insert(std::move(keys[j]), std::move(values[j]));
             }
         }
 
@@ -68,7 +69,7 @@ public:
         }
 
         // Don't resize down if we are at the minimum size!
-        if (m_size < START_CELLS) return;
+        if (m_size < (int)START_CELLS) return;
 
         if ((double)m_size / m_cellsCount < MIN_LOAD_FACTOR) {
             rehash();
@@ -123,5 +124,7 @@ private:
         return x;
     }
 };
+
+template class HashTable<unsigned int, unsigned int>;
 
 #endif

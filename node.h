@@ -9,7 +9,7 @@ class Node;
 // These are functions that cannot be methods because they can be called on a nullptr
 
 template <class K, class T>
-int height(const std::unique_ptr<Node<K, T>>& root) {
+int height(const Node<K, T>* root) {
     if (root == nullptr) {
         return -1;
     }
@@ -17,15 +17,15 @@ int height(const std::unique_ptr<Node<K, T>>& root) {
 }
 
 template <class K, class T>
-int balanceFactor(const std::unique_ptr<Node<K, T>>& root) {
+int balanceFactor(const Node<K, T>* root) {
     if (root == nullptr) {
         return 0;
     }
-    return height(root->m_left) - height(root->m_right);
+    return height(root->m_left.get()) - height(root->m_right.get());
 }
 
 template <class K, class T>
-int count(const std::unique_ptr<Node<K, T>>& root) {
+int count(const Node<K, T>* root) {
     if (root == nullptr) {
         return 0;
     }
@@ -90,13 +90,13 @@ public:
     }
 
     // TODO: Make const.
-    const std::unique_ptr<Node>& getLeft() const {
-        return m_left;
+    const Node* getLeft() const {
+        return m_left.get();
     }
 
     // TODO: Make const.
-    const std::unique_ptr<Node>& getRight() const {
-        return m_right;
+    const Node* getRight() const {
+        return m_right.get();
     }
 
     int addWins() const {
@@ -114,8 +114,8 @@ public:
 
 private:
     void updateHeightAndCount() {
-        m_height = 1 + std::max(height(m_left), height(m_right));
-        m_count = 1 + count(m_left) + count(m_right);
+        m_height = 1 + std::max(height(m_left.get()), height(m_right.get()));
+        m_count = 1 + count(m_left.get()) + count(m_right.get());
         updateMaxRank();
     }
 
@@ -143,11 +143,13 @@ private:
 
 
     template <class L, class U>
-    friend int height(const std::unique_ptr<Node<L, U>>&);
+    friend int height(const Node<L, U>*);
     template <class L, class U>
-    friend int balanceFactor(const std::unique_ptr<Node<L, U>>&);
+    friend int balanceFactor(const Node<L, U>*);
     template <class L, class U>
-    friend int count(const std::unique_ptr<Node<L, U>>&);
+    friend int count(const Node<L, U>*);
 };
+
+template class Node<int, int*>;
 
 #endif

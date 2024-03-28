@@ -127,16 +127,16 @@ T& btGet(Node<K, T>* root, const K& key) {
     }
 
     if (key < root->key) {
-        return btGet(root->getLeft().get(), key);
+        return btGet((Node<K, T>*)root->getLeft(), key);
     } else {
-        return btGet(root->getRight().get(), key);
+        return btGet((Node<K, T>*)root->getRight(), key);
     }
 }
 
 template <class K, class T>
 void rotate(std::unique_ptr<Node<K, T>>& root, bool right) {
     assert(root != nullptr);
-    const std::unique_ptr<Node<K, T>>& bRef = right ? root->getLeft() : root->getRight();
+    const Node<K, T>* bRef = right ? root->getLeft() : root->getRight();
     assert(bRef != nullptr);
 
     // This is the action we want to perform:
@@ -219,7 +219,7 @@ bool rebalanceRoot(std::unique_ptr<Node<K, T>>& root) {
         return false;
     }
 
-    int atRoot = balanceFactor(root);
+    int atRoot = balanceFactor(root.get());
     int atLeft = balanceFactor(root->getLeft());
     int atRight = balanceFactor(root->getRight());
 
@@ -265,7 +265,7 @@ bool rebalanceBranch(std::unique_ptr<Node<K, T>>& root, const K& pathKey, bool o
 }
 
 template <class K, class T>
-const K& getRightmostKey(const std::unique_ptr<Node<K, T>>& root) {
+const K& getRightmostKey(const Node<K, T>* root) {
     assert(root != nullptr);
     if (root->getRight() == nullptr) {
         return root->key;
@@ -274,7 +274,7 @@ const K& getRightmostKey(const std::unique_ptr<Node<K, T>>& root) {
 }
 
 template <class K, class T>
-const K& getAvlRemoveRebalancePath(const std::unique_ptr<Node<K, T>>& root, const K& key) {
+const K& getAvlRemoveRebalancePath(const Node<K, T>* root, const K& key) {
     if (root == nullptr) return key;
 
     if (key == root->key) {
@@ -304,14 +304,14 @@ template <class K, class T>
 T avlRemove(std::unique_ptr<Node<K, T>>& root, const K& key) {
     K pathKey = key;
     T data = btRemove(root, key, &pathKey);
-    pathKey = getAvlRemoveRebalancePath(root, pathKey);
+    pathKey = getAvlRemoveRebalancePath(root.get(), pathKey);
     rebalanceBranch(root, pathKey, false);
 
     return data;
 }
 
 template <class K, class T>
-const std::unique_ptr<Node<K, T>>& getMaximum(const std::unique_ptr<Node<K, T>>& root) {
+const Node<K, T>* getMaximum(const Node<K, T>* root) {
     if (root == nullptr) {
         return root;
     }
@@ -322,7 +322,7 @@ const std::unique_ptr<Node<K, T>>& getMaximum(const std::unique_ptr<Node<K, T>>&
 }
 
 template <class K, class T>
-const std::unique_ptr<Node<K, T>>& getMinimum(const std::unique_ptr<Node<K, T>>& root) {
+const Node<K, T>* getMinimum(const Node<K, T>* root) {
     if (root == nullptr) {
         return root;
     }
@@ -334,31 +334,17 @@ const std::unique_ptr<Node<K, T>>& getMinimum(const std::unique_ptr<Node<K, T>>&
 
 // Returns the number of elements written
 template <class K, class T>
-int treeToArray(const std::unique_ptr<Node<K, T>>& root, T** array) {
+int treeToArray(std::unique_ptr<Node<K, T>> root, T* values, K* keys) {
     if (root == nullptr) {
         return 0;
     }
 
     int written = 0;
-    written += treeToArray(root->getLeft(), array);
-    array[written] = &root->data;
+    written += treeToArray(root->popLeft(), values, keys);
+    values[written] = std::move(root->data);
+    keys[written] = std::move(root->key);
     written++;
-    written += treeToArray(root->getRight(), array + written);
-    return written;
-}
-
-// Returns the number of elements written
-template <class K, class T>
-int treeKeysToArray(const std::unique_ptr<Node<K, T>>& root, K** array) {
-    if (root == nullptr) {
-        return 0;
-    }
-
-    int written = 0;
-    written += treeKeysToArray(root->getLeft(), array);
-    array[written] = &root->key;
-    written++;
-    written += treeKeysToArray(root->getRight(), array + written);
+    written += treeToArray(root->popRight(), values + written, keys + written);
     return written;
 }
 
@@ -394,7 +380,7 @@ std::unique_ptr<Node<K, T>> treeFromArray(T* array, int size, F& keyGenerator) {
 }
 
 template <class K, class T>
-const std::unique_ptr<Node<K, T>>& getByIndex(const std::unique_ptr<Node<K, T>>& root, int index) {
+const Node<K, T>* getByIndex(const Node<K, T>* root, int index) {
     if (root == nullptr) {
         throw std::runtime_error("Index out of bounds");
     }
@@ -411,7 +397,7 @@ const std::unique_ptr<Node<K, T>>& getByIndex(const std::unique_ptr<Node<K, T>>&
 
 // Gets and sets the branch sum (= sum of addWins) of a given node.
 template <class K, class T>
-int getWins(const std::unique_ptr<Node<K, T>>& root, const K& key) {
+int getWins(const Node<K, T>* root, const K& key) {
     if (root == nullptr) return 0;
 
     if (root->key == key) {
@@ -447,7 +433,7 @@ void addBranchSumUpTo(Node<K, T>* root, int i, int add) {
 }
 
 template <class K, class T>
-int countSmaller(const std::unique_ptr<Node<K, T>>& root, const K& key) {
+int countSmaller(const Node<K, T>* root, const K& key) {
     if (root == nullptr) {
         return 0;
     }
@@ -483,10 +469,8 @@ private:
     TreeNode* m_middle;
 
     void updateMinAndMaxAndMiddle() {
-        std::unique_ptr<TreeNode>& min = const_cast<std::unique_ptr<TreeNode>&>(getMinimum(root));
-        std::unique_ptr<TreeNode>& max = const_cast<std::unique_ptr<TreeNode>&>(getMaximum(root));
-        m_minimum = min == nullptr ? nullptr : min.get();
-        m_maximum = max == nullptr ? nullptr : max.get();
+        m_minimum = const_cast<TreeNode*>(getMinimum(root.get()));
+        m_maximum = const_cast<TreeNode*>(getMaximum(root.get()));
         assert(m_size == 0 ? m_minimum == nullptr : m_minimum != nullptr);
         assert(m_size == 0 ? m_maximum == nullptr : m_maximum != nullptr);
         assert(m_size == 0 || !(m_minimum->key > m_maximum->key));
@@ -494,7 +478,7 @@ private:
         int middleIndex = m_size / 2;
         m_middle = (
             m_size == 0 ? nullptr :
-            const_cast<std::unique_ptr<TreeNode>&>(getByIndex(root, middleIndex)).get()
+            const_cast<TreeNode*>(getByIndex(root.get(), middleIndex))
         );
         assert(m_size == 0 ? m_middle == nullptr : m_middle != nullptr);
     }
@@ -543,7 +527,7 @@ public:
     // problem!
     // Note: Must be called on a key that is in the tree.
     int wins(const K& key) const {
-        return getWins(root, key);
+        return getWins(root.get(), key);
     }
 
     void addWinsInRange(int lowIndex, int highIndex, int add) {
@@ -578,11 +562,11 @@ public:
     }
 
     const T* minimum() const {
-        return m_minimum->data;
+        return &m_minimum->data;
     }
 
     T* minimum() {
-        return m_minimum->data;
+        return &m_minimum->data;
     }
 
     const K& minimumKey() const {
@@ -590,11 +574,11 @@ public:
     }
 
     const T* maximum() const {
-        return m_maximum->data;
+        return &m_maximum->data;
     }
 
     T* maximum() {
-        return m_maximum->data;
+        return &m_maximum->data;
     }
 
     const K& maximumKey() const {
@@ -605,19 +589,21 @@ public:
         return m_middle->key;
     }
 
-    // Return value must be deleted by the caller using delete[].
-    // The pointers point to the data in the tree, they are not copies.
-    T** toArray() const {
-        T** array = new T*[m_size];
-        int written = treeToArray(root, array);
+    // Deletes this tree!
+    void toArrays(std::unique_ptr<K[]>& keys, std::unique_ptr<T[]>& values) {
+        keys = std::unique_ptr<K[]>(new K[m_size]);
+        values = std::unique_ptr<T[]>(new T[m_size]);
+        int written = treeToArray(std::move(root), values.get(), keys.get());
         assert(written == m_size);
-        return array;
+
+        *this = Tree();
     }
 
-    K** keysToArray() const {
-        K** array = new K*[m_size];
-        int written = treeKeysToArray(root, array);
-        assert(written == m_size);
+    // Deletes this tree!
+    std::unique_ptr<T[]> toArray() {
+        std::unique_ptr<T[]> array;
+        std::unique_ptr<K[]> keys;
+        toArrays(keys, array);
         return array;
     }
 
@@ -635,19 +621,19 @@ public:
     }
 
     int getIndex(const K& key) const {
-        return countSmaller(root, key);
+        return countSmaller(root.get(), key);
     }
 
     int getIndexOfSmallerOrEqual(const K& key) const {
-        return countSmaller(root, key) + (contains(key) ? 0 : -1);
+        return countSmaller(root.get(), key) + (contains(key) ? 0 : -1);
     }
 
     int getIndexOfLargerOrEqual(const K& key) const {
-        return countSmaller(root, key);
+        return countSmaller(root.get(), key);
     }
 
     const K& getKeyByIndex(int i) const {
-        return getByIndex(root, i)->key;
+        return getByIndex(root.get(), i)->key;
     }
 
     friend auto operator<<(std::ostream& os, const Tree& tree) -> std::ostream& { 
@@ -673,5 +659,7 @@ auto operator<<(std::ostream& os, const std::unique_ptr<Node<K, T>>& node) -> st
 
     return os << ']';
 }
+
+template class Tree<int, int*>;
 
 #endif

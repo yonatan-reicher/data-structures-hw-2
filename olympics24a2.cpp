@@ -168,13 +168,17 @@ StatusType olympics_t::unite_teams(int teamId1, int teamId2)
     Team& team1 = *m_teams.get(teamId1);
     Team& team2 = *m_teams.get(teamId2);
 
-    PowerAndId oldKey(team1.getPower(), teamId1);
+    PowerAndId oldTeam1Key(team1.getPower(), teamId1);
+    PowerAndId oldTeam2Key(team2.getPower(), teamId2);
+
     team1.mergeAndEat(team2);
-    StatusType remove_ret = remove_team(teamId2);
-    assert(remove_ret == StatusType::SUCCESS);
+
+    // Remove Team 2.
+    removeAndUpdateTeamFromPowerTree(oldTeam2Key);
+    m_teams.remove(teamId2);
 
     // Update the power tree!
-    removeAndUpdateTeamFromPowerTree(oldKey);
+    removeAndUpdateTeamFromPowerTree(oldTeam1Key);
     insertAndUpdateTeamFromPowerTree(team1);
 
     return StatusType::SUCCESS;

@@ -1,5 +1,10 @@
 #include "PowerAndId.h"
 
+PowerAndId::PowerAndId() {
+    this->m_power = 0;
+    this->m_id = 0;
+}
+
 PowerAndId::PowerAndId(int power, int id) {
     this->m_power = power;
     this->m_id = id;

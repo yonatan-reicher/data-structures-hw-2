@@ -1,7 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "PowerAndId.h"
 class PowerAndId;
 
 class Player {
