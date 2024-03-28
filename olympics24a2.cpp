@@ -206,7 +206,7 @@ output_t<int> olympics_t::play_tournament(int lowPower, int highPower)
     if ((i & (i - 1)) != 0) return StatusType::FAILURE;
 
     while (i > 1) {
-        m_teamsByPower.addWinsInRange(high - i / 2, high, 1);
+        m_teamsByPower.addWinsInRange(high - i / 2 + 1, high, 1);
         i = i / 2;
     }
 
