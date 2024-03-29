@@ -1,0 +1,114 @@
+get_highest_ranked_team: SUCCESS, -1
+add_team: SUCCESS
+add_team: SUCCESS
+remove_newest_player: FAILURE
+remove_newest_player: FAILURE
+add_player: SUCCESS
+remove_newest_player: SUCCESS
+remove_newest_player: FAILURE
+get_highest_ranked_team: SUCCESS, 0
+num_wins_for_team: SUCCESS, 0
+num_wins_for_team: SUCCESS, 0
+unite_teams: SUCCESS
+add_player: FAILURE
+get_highest_ranked_team: SUCCESS, 0
+add_player: SUCCESS
+add_team: SUCCESS
+play_match: FAILURE
+get_highest_ranked_team: SUCCESS, 1
+add_player: SUCCESS
+play_match: SUCCESS, 10
+num_wins_for_team: SUCCESS, 1
+num_wins_for_team: SUCCESS, 0
+get_highest_ranked_team: SUCCESS, 2
+unite_teams: SUCCESS
+num_wins_for_team: FAILURE
+get_highest_ranked_team: SUCCESS, 3
+num_wins_for_team: SUCCESS, 1
+remove_newest_player: SUCCESS
+num_wins_for_team: SUCCESS, 1
+get_highest_ranked_team: SUCCESS, 2
+num_wins_for_team: SUCCESS, 1
+remove_newest_player: SUCCESS
+get_highest_ranked_team: SUCCESS, 0
+num_wins_for_team: SUCCESS, 1
+play_tournament: FAILURE
+add_team: SUCCESS
+add_player: SUCCESS
+play_tournament: SUCCESS, 20
+play_match: FAILURE
+get_highest_ranked_team: SUCCESS, 5
+num_wins_for_team: SUCCESS, 0
+unite_teams: SUCCESS
+remove_newest_player: SUCCESS
+get_highest_ranked_team: SUCCESS, 0
+num_wins_for_team: SUCCESS, 0
+add_player: SUCCESS
+get_highest_ranked_team: SUCCESS, 5
+add_team: SUCCESS
+add_player: SUCCESS
+add_team: SUCCESS
+add_player: SUCCESS
+add_team: SUCCESS
+add_player: SUCCESS
+play_tournament: SUCCESS, 10
+get_highest_ranked_team: SUCCESS, 7
+num_wins_for_team: SUCCESS, 2
+num_wins_for_team: SUCCESS, 0
+num_wins_for_team: SUCCESS, 1
+num_wins_for_team: SUCCESS, 0
+play_tournament: SUCCESS, 10
+num_wins_for_team: SUCCESS, 4
+num_wins_for_team: SUCCESS, 0
+num_wins_for_team: SUCCESS, 2
+num_wins_for_team: SUCCESS, 0
+get_highest_ranked_team: SUCCESS, 9
+remove_newest_player: SUCCESS
+num_wins_for_team: SUCCESS, 4
+num_wins_for_team: SUCCESS, 0
+num_wins_for_team: SUCCESS, 2
+num_wins_for_team: SUCCESS, 0
+get_highest_ranked_team: SUCCESS, 9
+unite_teams: SUCCESS
+num_wins_for_team: SUCCESS, 4
+num_wins_for_team: FAILURE
+num_wins_for_team: SUCCESS, 2
+num_wins_for_team: SUCCESS, 0
+get_highest_ranked_team: SUCCESS, 9
+remove_newest_player: SUCCESS
+play_match: FAILURE
+play_match: FAILURE
+num_wins_for_team: SUCCESS, 4
+num_wins_for_team: FAILURE
+num_wins_for_team: SUCCESS, 2
+num_wins_for_team: SUCCESS, 0
+get_highest_ranked_team: SUCCESS, 9
+play_match: FAILURE
+play_tournament: SUCCESS, 10
+num_wins_for_team: SUCCESS, 5
+num_wins_for_team: FAILURE
+num_wins_for_team: SUCCESS, 2
+num_wins_for_team: SUCCESS, 0
+get_highest_ranked_team: SUCCESS, 10
+unite_teams: SUCCESS
+num_wins_for_team: SUCCESS, 5
+num_wins_for_team: FAILURE
+num_wins_for_team: FAILURE
+num_wins_for_team: SUCCESS, 0
+get_highest_ranked_team: SUCCESS, 10
+remove_newest_player: SUCCESS
+num_wins_for_team: SUCCESS, 5
+num_wins_for_team: FAILURE
+num_wins_for_team: FAILURE
+num_wins_for_team: SUCCESS, 0
+get_highest_ranked_team: SUCCESS, 5
+play_match: FAILURE
+unite_teams: SUCCESS
+num_wins_for_team: SUCCESS, 5
+num_wins_for_team: FAILURE
+num_wins_for_team: FAILURE
+num_wins_for_team: FAILURE
+get_highest_ranked_team: SUCCESS, 10
+remove_newest_player: SUCCESS
+get_highest_ranked_team: SUCCESS, 0
+num_wins_for_team: SUCCESS, 5

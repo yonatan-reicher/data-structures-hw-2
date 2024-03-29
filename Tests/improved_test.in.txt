@@ -1,0 +1,101 @@
+add_team 1
+add_team 40
+add_team 45
+add_team 50
+add_team 52
+add_team 51
+add_team 53
+add_team 80
+add_team 85
+add_team 82
+add_team 81
+add_team 83
+add_team 99
+add_team 100
+add_team 98
+add_player 1 1
+add_player 40 40
+add_player 45 45
+add_player 50 50
+add_player 52 52
+add_player 51 51
+add_player 53 53
+add_player 80 80
+add_player 85 85
+add_player 82 82
+add_player 81 81
+add_player 83 83
+add_player 99 99
+add_player 100 100
+add_player 98 98
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+remove_newest_player 50
+get_highest_ranked_team
+add_player 50 50
+get_highest_ranked_team
+play_tournament 1 80
+get_highest_ranked_team
+play_tournament 83 100
+get_highest_ranked_team
+play_match 50 98
+play_match 50 98
+play_match 50 98
+play_match 50 98
+play_match 50 98
+play_match 50 98
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+get_highest_ranked_team
+play_tournament 50 90
+add_team 101
+add_player 101 90000
+get_highest_ranked_team
+play_tournament 83 100
+get_highest_ranked_team
+remove_newest_player
+get_highest_ranked_team
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+play_tournament 83 100
+add_player 9
+get_highest_ranked_team

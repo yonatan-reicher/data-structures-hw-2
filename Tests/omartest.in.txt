@@ -1,0 +1,114 @@
+get_highest_ranked_team
+add_team 10
+add_team 20
+remove_newest_player 10
+remove_newest_player 20
+add_player 10 10
+remove_newest_player 10
+remove_newest_player 10
+get_highest_ranked_team
+num_wins_for_team 10
+num_wins_for_team 20
+unite_teams 20 10
+add_player 10 1
+get_highest_ranked_team
+add_player 20 1
+add_team 10
+play_match 20 10
+get_highest_ranked_team
+add_player 10 1
+play_match 10 20
+num_wins_for_team 10
+num_wins_for_team 20
+get_highest_ranked_team
+unite_teams 10 20
+num_wins_for_team 20
+get_highest_ranked_team
+num_wins_for_team 10
+remove_newest_player 10
+num_wins_for_team 10
+get_highest_ranked_team
+num_wins_for_team 10
+remove_newest_player 10
+get_highest_ranked_team
+num_wins_for_team 10
+play_tournament 1 2
+add_team 20
+add_player 20 5
+play_tournament 1 20
+play_match 20 10
+get_highest_ranked_team
+num_wins_for_team 20
+unite_teams 20 10
+remove_newest_player 20
+get_highest_ranked_team
+num_wins_for_team 20
+add_player 20 5
+get_highest_ranked_team
+add_team 10
+add_player 10 5
+add_team 11
+add_player 11 5
+add_team 12
+add_player 12 5
+play_tournament 4 5
+get_highest_ranked_team
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+play_tournament 4 5
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+get_highest_ranked_team
+remove_newest_player 11
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+get_highest_ranked_team
+unite_teams 11 20
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+get_highest_ranked_team
+remove_newest_player 11
+play_match 11 12
+play_match 12 11
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+get_highest_ranked_team
+play_match 20 10
+play_tournament 4 5
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+get_highest_ranked_team
+unite_teams 10 11
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+get_highest_ranked_team
+remove_newest_player 10
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+get_highest_ranked_team
+play_match 10 12
+unite_teams 10 12
+num_wins_for_team 10
+num_wins_for_team 20
+num_wins_for_team 11
+num_wins_for_team 12
+get_highest_ranked_team
+remove_newest_player 10
+get_highest_ranked_team
+num_wins_for_team 10
